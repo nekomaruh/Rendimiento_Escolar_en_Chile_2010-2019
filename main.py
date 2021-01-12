@@ -2,10 +2,14 @@
 import pandas as pd
 import os, psutil
 import time
+import sqlalchemy
 
 # Project functions
 import static_tables as st
 import queries as q
+
+# Exportamos hacia la base de datos en postgres
+engine = sqlalchemy.create_engine('postgresql://postgres:postgres@localhost:5432/rendimiento_escolar')
 
 start_time = time.time()
 
@@ -15,7 +19,6 @@ def read_file(year, drops):
     df = pd.read_csv("datasets/Rendimiento por estudiante "+str(year)+".csv", sep=';', low_memory=False, encoding='latin-1')
     print('Cantidad de datos:',len(df))
 
-    
     # Eliminamos las columnas
     if drops!=None:
         for col in drops:
@@ -30,25 +33,43 @@ def read_file(year, drops):
     if year <= 2013: # Esta solo en los años 2010-2013
         df['INT_ALU'] = df['INT_ALU'].replace(['.'],'2') 
     
-    # Crear comunas de establecimiento y alumno, estan en todos los años
-    data_com_rbd = [df["COD_COM_RBD"], df["NOM_COM_RBD"]]
-    headers_com_rbd = ["COD_COM_RBD", "NOM_COM_RBD"]
-    df_com_rbd = pd.concat(data_com_rbd, axis=1, keys=headers_com_rbd)
-    df_com_rbd = df_com_rbd.drop_duplicates(subset=['COD_COM_RBD'])
-    print(df_com_rbd)
+    if year == 2010:
+        # Crear comunas de establecimiento y alumno, estan en todos los años
+        headers_com = ["COD_COM", "NOM_COM"]
 
+        data_com_rbd = [df["COD_COM_RBD"], df["NOM_COM_RBD"]]
+        df_com_rbd = pd.concat(data_com_rbd, axis=1, keys=headers_com)
+
+        data_com_alu = [df["COD_COM_ALU"], df["NOM_COM_ALU"]]
+        df_com_alu = pd.concat(data_com_alu, axis=1, keys=headers_com)
+
+        df_com = pd.concat([df_com_rbd,df_com_alu])
+
+        df_com = df_com.drop_duplicates(subset=['COD_COM'])
+        df_com = df_com.reset_index(drop=True)
+
+        q.insert_dim_com(df_com.values.tolist())
+
+        del headers_com, data_com_rbd, df_com_rbd, data_com_alu, df_com_alu, df_com
     
+    data_alu = [df["MRUN"], df["FEC_NAC_ALU"],df["GEN_ALU"], df["COD_COM_ALU"], df["INT_ALU"]]
+    headers_alu = ["mrun", "fec_nac_alu", "gen_alu", "cod_com", "int_alu"]
+    df_alu = pd.concat(data_alu, axis=1, keys=headers_alu)
+    df_alu = df_alu.drop_duplicates(subset=['mrun'])
+    df_alu = df_alu.reset_index(drop=True)
+
+    df_alu.to_sql('alumno',engine, method='multi', if_exists='append',index=False)
+
+    print(df_alu)
+
+
 
     #df_2010_head = df_2010.head()
     #html_2010 = df_2010_head.to_html("datasets_headers_pdf/df_"+year+".html")
     ram(info='Dataframe ' + str(year))
     return df
 
-
-
-
 def insert_dimensions():
-    q.drop_static_tables() # Elimina las tablas estáticas si existen
     q.create_static_tables() # Crea las tablas estáticas
     q.insert_dim_depe(st.data_depe) # Inserta los valores a las tablas estáticas
     q.insert_dim_region(st.data_region)
@@ -65,21 +86,32 @@ def insert_dimensions():
     q.insert_dim_ense2(st.data_ense2)
     print('Dimensions inserted successfully!')
 
+def insert_tables():
+    q.create_tables()
+
 def ram(info='unknown'):
     process = psutil.Process(os.getpid())
     print('RAM:', process.memory_info()[0]/8000000, 'mb ('+info+')')
 
 if __name__ == "__main__":
-    # Inserta todas las dimensiones estáticas
+    #q.insert_alumnox()
     
+    # Inserta todas las dimensiones estáticas
     ram(info='Loading program')
+    q.drop_tables() # Elimina las tablas si existen
     insert_dimensions()
+    insert_tables()
 
     del st
     ram(info='Delete imports')
 
+    #q.insert_alumnox()
+
+    
     # Leemos los archivos
     df_2010 = read_file(year=2010, drops=['SIT_FIN_R'])
+
+    
     """
     df_2011 = read_file(year=2011, drops=['COD_SEC', 'COD_ESPE', 'FEC_ING_ALU', 'SIT_FIN_R'])
     df_2012 = read_file(year=2012, drops=['COD_SEC', 'COD_ESPE', 'SIT_FIN_R'])

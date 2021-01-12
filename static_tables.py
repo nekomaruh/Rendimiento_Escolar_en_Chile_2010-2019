@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 # Inicializamos la lista de dependencia establecimientos
 data_depe = [[1, 'Corporación Municipal'], 
                  [2, 'Municipal DAEM'], 

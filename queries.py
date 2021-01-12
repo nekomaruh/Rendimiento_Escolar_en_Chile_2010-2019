@@ -8,7 +8,18 @@ connection = ps.connect(user="postgres",
 
 cursor = connection.cursor()
 
-def drop_static_tables():
+def insert_alumnox():
+    cursor.execute("""insert into
+        alumno(MRUN, GEN_ALU, FEC_NAC_ALU, INT_ALU, COD_COM)
+        values(%s,%s,%s,%s,%s)""",("1","0","19960511","1","15101"))
+    connection.commit()
+
+def drop_tables():
+    cursor.execute("DROP TABLE IF EXISTS notas;")
+    cursor.execute("DROP TABLE IF EXISTS alumno;")
+    cursor.execute("DROP TABLE IF EXISTS establecimiento;")
+
+    cursor.execute("DROP TABLE IF EXISTS dim_com;")
     cursor.execute("DROP TABLE IF EXISTS dim_ense2;")
     cursor.execute("DROP TABLE IF EXISTS dim_espe;")
     cursor.execute("DROP TABLE IF EXISTS dim_sec;")
@@ -26,6 +37,11 @@ def drop_static_tables():
     print('Tables deleted successfully!')
 
 def create_static_tables():
+
+    # Tabla comuna
+    cursor.execute("""CREATE TABLE IF NOT EXISTS dim_com(
+                        COD_COM INTEGER PRIMARY KEY NOT NULL UNIQUE,
+                        NOM_COM TEXT NOT NULL);""")
     
     # Tabla dependencia
     cursor.execute("""CREATE TABLE IF NOT EXISTS dim_depe(
@@ -93,13 +109,13 @@ def create_static_tables():
                         INDICADOR TEXT NOT NULL
                     );""")
     
-    # Tabla sector economico (CAMBIAR LOS VACIOS POR 0)
+    # Tabla sector economico
     cursor.execute("""CREATE TABLE IF NOT EXISTS dim_sec(
                         COD_SEC INTEGER PRIMARY KEY NOT NULL UNIQUE,
                         SECTOR_ECONOMICO TEXT NOT NULL
                     );""")
     
-    # Tabla especialidad (CAMBIAR LOS VACIOS POR 0)
+    # Tabla especialidad
     cursor.execute("""CREATE TABLE IF NOT EXISTS dim_espe(
                         COD_SEC INTEGER NOT NULL,
                         COD_ESPE INTEGER NOT NULL UNIQUE,
@@ -108,6 +124,7 @@ def create_static_tables():
                         foreign key(COD_SEC) references dim_sec(COD_SEC)
                     );""")
     
+    # Tabla enseñanza resumida
     cursor.execute("""CREATE TABLE IF NOT EXISTS dim_ense2(
                         COD_ENSE2 INTEGER PRIMARY KEY NOT NULL UNIQUE,
                         DESCRIPCION TEXT NOT NULL
@@ -115,12 +132,62 @@ def create_static_tables():
     
     connection.commit()
     print("Tables created successfully!")
-    
+
+
 def create_tables():
-    cursor.execute("""CREATE TABLE IF NOT EXISTS dim_alumno(
-                        COD_ENSE2 INTEGER PRIMARY KEY NOT NULL UNIQUE,
-                        DESCRIPCION TEXT NOT NULL
+    cursor.execute("""CREATE TABLE IF NOT EXISTS alumno(
+                        MRUN INTEGER PRIMARY KEY NOT NULL UNIQUE,
+                        FEC_NAC_ALU INTEGER,
+                        GEN_ALU INTEGER,
+                        COD_COM INTEGER,
+                        INT_ALU INTEGER,
+                        foreign key (GEN_ALU) references dim_genero(GEN_ALU),
+                        foreign key (COD_COM) references dim_com(COD_COM),
+                        foreign key (INT_ALU) references dim_int_alu(INT_ALU)
                     );""")
+    cursor.execute("""CREATE TABLE IF NOT EXISTS establecimiento(
+                        RBD INTEGER NOT NULL,
+                        DGV_RBD INTEGER NOT NULL,
+                        NOM_RBD TEXT,
+                        RURAL_RBD INTEGER,
+                        COD_DEPE INTEGER,
+                        COD_ESPE INTEGER,
+                        COD_REG_RBD INTEGER,
+                        COD_PRO_RBD INTEGER,
+                        COD_SEC INTEGER,
+                        COD_COM INTEGER,
+                        primary key (RBD, DGV_RBD),
+                        foreign key (RURAL_RBD) references dim_rural(RURAL_RBD),
+                        foreign key (COD_DEPE) references dim_depe(COD_DEPE),
+                        foreign key (COD_ESPE) references dim_espe(COD_ESPE),
+                        foreign key (COD_REG_RBD) references dim_region(COD_REG_RBD),
+                        foreign key (COD_PRO_RBD) references dim_provincia(COD_PRO_RBD),
+                        foreign key (COD_SEC) references dim_sec(COD_SEC),
+                        foreign key (COD_COM) references dim_com(COD_COM)
+                    );""")
+    cursor.execute("""CREATE TABLE IF NOT EXISTS notas(
+                        AGNO INTEGER NOT NULL,
+                        MRUN INTEGER NOT NULL,
+                        RBD INTEGER,
+                        DGV_RBD INTEGER,
+                        PROM_GRAL INTEGER,
+                        SIT_FIN TEXT,
+                        COD_ENSE INTEGER,
+                        COD_ENSE2 INTEGER,
+                        COD_JOR INTEGER,
+                        COD_GRADO INTEGER,
+                        primary key (AGNO, MRUN),
+                        foreign key (MRUN) references alumno(MRUN),
+                        foreign key (RBD, DGV_RBD) references establecimiento(RBD, DGV_RBD),
+                        foreign key (SIT_FIN) references dim_sit_fin(SIT_FIN),
+                        foreign key (COD_ENSE) references dim_ense(COD_ENSE),
+                        foreign key (COD_ENSE2) references dim_ense2(COD_ENSE2),
+                        foreign key (COD_JOR) references dim_jornada(COD_JOR),
+                        foreign key (COD_ENSE, COD_GRADO) references dim_grado(COD_ENSE, COD_GRADO)
+                    );""")
+    
+    connection.commit()
+    print('Tables deleted successfully!')
 
 def insert_dim_depe(list):
     for i in list:
@@ -236,7 +303,7 @@ def insert_dim_ense2(list):
 
 
 ### Comunas agregadas por funcion
-def insert_com(list):
+def insert_dim_com(list):
     for i in list:
         cursor.execute("""insert into
         dim_com(COD_COM, NOM_COM)
@@ -245,27 +312,27 @@ def insert_com(list):
 
 
 ### Alumnos agregados por funcion
-def insert_alu(list):
+def insert_alumno(list):
     for i in list:
-        cursos.execute("""insert into
+        cursor.execute("""insert into
         dim_alumno(MRUN, GEN_ALU, FEC_NAC_ALU, INT_ALU, COD_COM)
         values(%s,%s,%s,%s,%s)""",(i[0],i[1],i[2],i[3],i[4]))
     connection.commit()
 
 
 # Establecimiento agregados por funcion
-def insert_est(list):
+def insert_establecimiento(list):
     for i in list:
-        cursos.execute("""insert into
+        cursor.execute("""insert into
         dim_establecimiento(RBD, DGV_RBD, NOM_RBD, RURAL_RBD, COD_DEPE, COD_ESPE, COD_REG_RBD, COD_SEC, COD_REG_RBD, COD_COM)
         values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],i[9]))
     connection.commit()
 
 
 # Notas agregadas por funcion
-def insert_not(list):
+def insert_notas(list):
     for i in list:
-        cursos.execute("""insert into
+        cursor.execute("""insert into
         dim_establecimiento(AGNO, MRUN, RBD, DGV_RBD, PROM_GRAL, ASISTENCIA, SIT_FIN, COD_ENSE, COD_ENSE2)
         values(%s,%s,%s,%s,%s,%s,%s,%s,%s)""",(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8]))
     connection.commit()

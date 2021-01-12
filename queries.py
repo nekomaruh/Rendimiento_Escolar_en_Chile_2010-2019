@@ -243,3 +243,29 @@ def insert_com(list):
         values(%s,%s)""",(i[0], i[1]))
     connection.commit()
 
+
+### Alumnos agregados por funcion
+def insert_alu(list):
+    for i in list:
+        cursos.execute("""insert into
+        dim_alumno(MRUN, GEN_ALU, FEC_NAC_ALU, INT_ALU, COD_COM)
+        values(%s,%s,%s,%s,%s)""",(i[0],i[1],i[2],i[3],i[4]))
+    connection.commit()
+
+
+# Establecimiento agregados por funcion
+def insert_est(list):
+    for i in list:
+        cursos.execute("""insert into
+        dim_establecimiento(RBD, DGV_RBD, NOM_RBD, RURAL_RBD, COD_DEPE, COD_ESPE, COD_REG_RBD, COD_SEC, COD_REG_RBD, COD_COM)
+        values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8],i[9]))
+    connection.commit()
+
+
+# Notas agregadas por funcion
+def insert_not(list):
+    for i in list:
+        cursos.execute("""insert into
+        dim_establecimiento(AGNO, MRUN, RBD, DGV_RBD, PROM_GRAL, ASISTENCIA, SIT_FIN, COD_ENSE, COD_ENSE2)
+        values(%s,%s,%s,%s,%s,%s,%s,%s,%s)""",(i[0],i[1],i[2],i[3],i[4],i[5],i[6],i[7],i[8]))
+    connection.commit()

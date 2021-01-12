@@ -4,12 +4,23 @@ import os, psutil
 import time
 import sqlalchemy
 
+
 # Project functions
 import static_tables as st
 import queries as q
 
+from sqlalchemy import event
+
 # Exportamos hacia la base de datos en postgres
 engine = sqlalchemy.create_engine('postgresql://postgres:postgres@localhost:5432/rendimiento_escolar')
+
+@event.listens_for(engine, 'before_cursor_execute')
+def receive_before_cursor_execute(conn, cursor, statement, params, context, executemany):
+    if executemany:
+        cursor.fast_executemany = True
+        cursor.commit()
+
+
 
 start_time = time.time()
 
@@ -61,6 +72,8 @@ def read_file(year, drops):
     df_alu.to_sql('alumno',engine, method='multi', if_exists='append',index=False)
 
     print(df_alu)
+
+  
 
 
 

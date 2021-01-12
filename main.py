@@ -20,6 +20,8 @@ def read_file(year, drops):
     # No nos sirve para el análisis de datos final y contienen datos vacíos en algunos casos
     #df = df.drop(columns=drops)
     #ram_info = 'Dataframe ' + str(year)
+    df_2010_head = df_2010.head()
+    html_2010 = df_2010_head.to_html("datasets_headers_pdf/df_"+year+".html")
     ram(info='Dataframe ' + str(year))
     return df
 
@@ -57,9 +59,6 @@ if __name__ == "__main__":
     # Leemos los archivos
     
     df_2010 = read_file(year=2010, drops=['COD_SEC', 'COD_ESPE'])
-    df_2010_head = df_2010.head()
-    html_2010 = df_2010_head.to_html("datasets_headers_pdf/df_2010.html")
-    """
     df_2011 = read_file(year=2011, drops=['COD_SEC', 'COD_ESPE', 'FEC_ING_ALU'])
     df_2012 = read_file(year=2012, drops=['COD_SEC', 'COD_ESPE'])
     df_2013 = read_file(year=2013, drops=['COD_SEC', 'COD_ESPE'])
@@ -69,7 +68,7 @@ if __name__ == "__main__":
     df_2017 = read_file(year=2017, drops=['COD_SEC', 'COD_ESPE'])
     df_2018 = read_file(year=2018, drops=['COD_SEC', 'COD_ESPE'])
     df_2019 = read_file(year=2019, drops=['COD_SEC', 'COD_ESPE'])
-    """
+
 
     ram(info='Final ram usage 2010-2019')
 

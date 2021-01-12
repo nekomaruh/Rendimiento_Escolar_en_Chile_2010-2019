@@ -233,3 +233,13 @@ def insert_dim_ense2(list):
         dim_ense2(COD_ENSE2, DESCRIPCION)
         values(%s,%s)""",(i[0], i[1]))
     connection.commit()
+
+
+### Comunas agregadas por funcion
+def insert_com(list):
+    for i in list:
+        cursor.execute("""insert into
+        dim_com(COD_COM, NOM_COM)
+        values(%s,%s)""",(i[0], i[1]))
+    connection.commit()
+

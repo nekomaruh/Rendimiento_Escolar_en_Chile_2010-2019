@@ -18,26 +18,25 @@ def read_file(year, drops):
     
     # Eliminamos las columnas
     if drops!=None:
-        df = df.drop(columns=drops)
+        for col in drops:
+            if col in df:
+                df = df.drop(columns=col)
+        
+    # Están en todos los años
+    df["SIT_FIN"].fillna("-", inplace = True) 
+    df["COD_SEC"].fillna('0', inplace = True) 
+    df["COD_ESPE"].fillna('0', inplace = True)
 
-  
-    df["SIT_FIN"].fillna( method ='-', inplace = True) # Esta en todos los años
-    """
-    df["COD_SEC"].fillna( method ='0', inplace = True) # Esta en todos los años
-    df["COD_ESPE"].fillna( method ='0', inplace = True) # Esta en todos los años
-    if year <= 2013:
-        df['INT_ALU'] = df['INT_ALU'].replace(['.'],'2') # Esta solo en los años 2010-2013
+    if year <= 2013: # Esta solo en los años 2010-2013
+        df['INT_ALU'] = df['INT_ALU'].replace(['.'],'2') 
     
-    #df_com_rbd = df.copy()
-    """
+    # Crear comunas de establecimiento y alumno, estan en todos los años
+    data_com_rbd = [df["COD_COM_RBD"], df["NOM_COM_RBD"]]
+    headers_com_rbd = ["COD_COM_RBD", "NOM_COM_RBD"]
+    df_com_rbd = pd.concat(data_com_rbd, axis=1, keys=headers_com_rbd)
+    df_com_rbd = df_com_rbd.drop_duplicates(subset=['COD_COM_RBD'])
+    print(df_com_rbd)
 
-    """
-    data_com_rbd = [df["COD_COM_ALU"], df["NOM_COM_RBD"]]
-    headers_com_rbd = ["COD_COM_ALU", "NOM_COM_RBD"]
-
-    df3 = pd.concat(data_com_rbd, axis=1, keys=headers_com_rbd)
-    print(df3)
-    """
     
 
     #df_2010_head = df_2010.head()
@@ -82,17 +81,16 @@ if __name__ == "__main__":
     # Leemos los archivos
     df_2010 = read_file(year=2010, drops=['SIT_FIN_R'])
     """
-    df_2011 = read_file(year=2011, drops=['COD_SEC', 'COD_ESPE', 'FEC_ING_ALU'])
-    df_2012 = read_file(year=2012, drops=['COD_SEC', 'COD_ESPE'])
-    df_2013 = read_file(year=2013, drops=['COD_SEC', 'COD_ESPE'])
-    df_2014 = read_file(year=2014, drops=['COD_SEC', 'COD_ESPE'])
-    df_2015 = read_file(year=2015, drops=['COD_SEC', 'COD_ESPE'])
-    df_2016 = read_file(year=2016, drops=['COD_SEC', 'COD_ESPE'])
-    df_2017 = read_file(year=2017, drops=['COD_SEC', 'COD_ESPE'])
-    df_2018 = read_file(year=2018, drops=['COD_SEC', 'COD_ESPE'])
-    df_2019 = read_file(year=2019, drops=['COD_SEC', 'COD_ESPE'])
+    df_2011 = read_file(year=2011, drops=['COD_SEC', 'COD_ESPE', 'FEC_ING_ALU', 'SIT_FIN_R'])
+    df_2012 = read_file(year=2012, drops=['COD_SEC', 'COD_ESPE', 'SIT_FIN_R'])
+    df_2013 = read_file(year=2013, drops=['COD_SEC', 'COD_ESPE', 'COD_TIP_CUR', 'GD_ALU', 'COD_REG_ALU', 'COD_RAMA', 'SIT_FIN_R'])
+    df_2014 = read_file(year=2014, drops=['COD_SEC', 'COD_ESPE', 'COD_RAMA', 'COD_REG_ALU', 'GD_ALU', 'COD_TIP_CUR', 'COD_DEPE2'])
+    df_2015 = read_file(year=2015, drops=['COD_SEC', 'COD_ESPE', 'COD_DEPROV_RBD', 'NOM_DEPROV_RBD', 'COD_DEPE2', 'ESTADO_ESTAB', 'COD_TIP_CUR', 'GD_ALU', 'COD_REG_ALU', 'COD_RAMA', 'SIT_FIN_R'])
+    df_2016 = read_file(year=2016, drops=['COD_SEC', 'COD_ESPE', 'SIT_FIN_R’, ‘COD_RAMA’, ‘COD_REG_ALU’, ‘COD_DES_CUR’, ‘COD_TIP_CUR’, ‘ESTADO_ESTAB’, ‘COD_DEPE2’, ‘NOM_DEPROV_RBD’, ‘COD_DEPROV_RBD’])
+    df_2017 = read_file(year=2017, drops=['COD_SEC', 'COD_ESPE', 'COD_DEPROV_RBD’, ‘NOM_DEPROV_RBD’, ‘COD_DEPE2’, ‘ESTADO_ESTAB’, ‘COD_TIP_CUR’, ‘COD_DES_CUR’, ‘COD_REG_ALU’, ‘COD_RAMA’, ‘SIT_FIN_R’])
+    df_2018 = read_file(year=2018, drops=['COD_SEC', 'COD_ESPE', 'SIT_FIN_R’, ‘COD_RAMA’, ‘COD_REG_ALU’, ‘COD_DES_CUR’, ‘COD_TIP_CUR’, ‘ESTADO_ESTAB’, ‘COD_DEPE2’, ‘NOM_DEPROV_RBD’, ‘COD_DEPROV_RBD’, ‘NOM_REG_RBD_A’])
+    df_2019 = read_file(year=2019, drops=['COD_SEC', 'COD_ESPE', 'NOM_REG_RBD_A’, ‘COD_DEPROV_RBD’, ‘NOM_DEPROV_RBD’, ‘COD_DEPE2’, ‘ESTADO_ESTAB’, ‘COD_TIP_CUR’, ‘COD_DES_CUR’, ‘COD_REG_ALU’, ‘COD_RAMA’, ‘COD_MEN’, ‘SIT_FIN_R’])
     """
-
     ram(info='Final ram usage 2010-2019')
 
     #del df_2010, df_2011, df_2012, df_2013, df_2014, df_2015, df_2016, df_2017, df_2018, df_2019

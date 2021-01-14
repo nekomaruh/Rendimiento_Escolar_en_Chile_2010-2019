@@ -8,10 +8,16 @@ connection = ps.connect(user="postgres",
 
 cursor = connection.cursor()
 
-def insert_alumnox():
+def insert_alumno_test():
     cursor.execute("""insert into
         alumno(MRUN, GEN_ALU, FEC_NAC_ALU, INT_ALU, COD_COM)
         values(%s,%s,%s,%s,%s)""",("1","0","19960511","1","15101"))
+    connection.commit()
+
+def insert_establecimiento_test():
+    cursor.execute("""insert into
+        establecimiento(RBD, DGV_RBD, NOM_RBD, RURAL_RBD, COD_DEPE, COD_ESPE, COD_REG_RBD, COD_PRO_RBD, COD_SEC, COD_COM)
+        values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",("1","1","colegio mio","1","1","0","1","11","0","15101"))
     connection.commit()
 
 def drop_tables():
@@ -170,7 +176,7 @@ def create_tables():
                         MRUN INTEGER NOT NULL,
                         RBD INTEGER,
                         DGV_RBD INTEGER,
-                        PROM_GRAL INTEGER,
+                        PROM_GRAL FLOAT,
                         SIT_FIN TEXT,
                         COD_ENSE INTEGER,
                         COD_ENSE2 INTEGER,

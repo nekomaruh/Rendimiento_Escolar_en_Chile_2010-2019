@@ -1,4 +1,6 @@
 # Libraries
+from os import error
+from numpy.core.defchararray import encode
 import pandas as pd
 import time
 import sqlalchemy
@@ -103,7 +105,7 @@ def get_dataframes(year=2010):
         print('Reading:', path)
    
         # Leemos los datos y separamos por ; porque algunos nombres de establecimientos poseen comas y dan error
-        df = pd.read_csv(path, sep=';', low_memory=False, encoding='latin-1')
+        df = pd.read_csv(path, sep=';', low_memory=False, encoding='latin')
         df.columns = map(str.upper, df.columns)
         #required_columns = interface.get_required_columns(list=df_current_year.columns.tolist())
         #print(required_columns)
@@ -112,52 +114,105 @@ def get_dataframes(year=2010):
         for column in columns_to_drop:
             if column in df_columns:
                 drop.append(column)
-        print('Drop:', drop)
-        df = df.drop(drop, inplace=True, axis=1)
+        #print('Drop:', drop)
+        df.drop(columns=drop, inplace=True, axis=1)
 
         # Limpiar datos: Están en todos los años
         df.fillna({'SIT_FIN': '-'}, inplace=True)
         df['COD_SEC'] = df['COD_SEC'].replace([' '], 0)
         df['COD_ESPE'] = df['COD_ESPE'].replace([' '], 0)
+        df["PROM_GRAL"] = df["PROM_GRAL"].str.replace(',', ".").astype(float)
+        
+        # Faltan estos datos, rellenar vacios
+        if year <= 2012:
+            df["COD_PRO_RBD"] = np.nan # Está en 2013+
+            df["COD_JOR"] = np.nan # Está en 2013+
+        
+        if year <= 2013:  # Esta solo en los años 2010-2013
+            df['INT_ALU'] = df['INT_ALU'].replace(['.'], 2)
+            df["COD_ENSE2"] = np.nan # Está en 2014+
+
+        if year >= 2014: # Rellenar con vacíos
+             df['INT_ALU'] = np.nan
+
+        if 'Ï»¿AGNO' in df_columns:
+            df = df.rename(columns={"Ï»¿AGNO": "AGNO"})
 
         dataframes.append(df)
+        
+        if year >= 2010:
+            # Crear comunas de establecimiento y alumno, estan en todos los años
+            headers_com = ["COD_COM", "NOM_COM"]
+            # Comunas donde están los establecimientos
+            data_com_rbd = [df["COD_COM_RBD"], df["NOM_COM_RBD"]]
+            df_com_rbd = pd.concat(data_com_rbd, axis=1, keys=headers_com)
+            # Comunas donde provienen los alumnos
+            data_com_alu = [df["COD_COM_ALU"], df["NOM_COM_ALU"]]
+            df_com_alu = pd.concat(data_com_alu, axis=1, keys=headers_com)
+            # Concatenamos las columnas
+            df_com = pd.concat([df_com_rbd,df_com_alu])
+            df_com = df_com.drop_duplicates(subset=['COD_COM'])
+            df_com = df_com.reset_index(drop=True)
+            # Insertamos datos a la dimensión comuna
+            interface.insert_dim_comuna(df_com.values.tolist())
+            # Elimina residuales ram
+            del headers_com, data_com_rbd, df_com_rbd, data_com_alu, df_com_alu, df_com
+        
+
+        """
+        data_alu = [df["MRUN"], df["FEC_NAC_ALU"],df["GEN_ALU"], df["COD_COM_ALU"], df["INT_ALU"]]
+        headers_alu = ["mrun", "fec_nac_alu", "gen_alu", "cod_com", "int_alu"]
+        df_alu = pd.concat(data_alu, axis=1, keys=headers_alu)
+        df_alu = df_alu.drop_duplicates(subset=['mrun'])
+        df_alu = df_alu.reset_index(drop=True)
+        df_alu.to_sql('alumno',engine, method='multi', if_exists='append',index=False)
+        """
+
+        
+        data_alumno = [df["MRUN"], df["FEC_NAC_ALU"],df["GEN_ALU"], df["COD_COM_ALU"], df["INT_ALU"]]
+        headers_alumno = ["mrun", "fec_nac_alu", "gen_alu", "cod_com", "int_alu"]
+        interface.df_to_sql(table_name='alumno', engine=engine, data=data_alumno, headers=headers_alumno, remove_duplicates=['mrun'])
+        
 
         #print('Cantidad de datos:', len(df))
+        # Agregar establecimientos
+        
+        data_establecimiento = [df["RBD"], df["DGV_RBD"], df["NOM_RBD"], df["RURAL_RBD"], df["COD_DEPE"], df["COD_REG_RBD"], df["COD_SEC"], df["COD_COM_RBD"]]
+        headers_establecimiento = ['rbd', 'dgv_rbd', 'nom_rbd', 'rural_rbd', 'cod_depe', 'cod_reg_rbd', 'cod_sec', 'cod_com']
+        interface.df_to_sql(table_name='establecimiento', engine=engine, data=data_establecimiento, headers=headers_establecimiento, remove_duplicates=['rbd','dgv_rbd'])
+        
+
+        # Agregar notas
+        
+        data_notas = [df["AGNO"], df["MRUN"], df["RBD"], df["DGV_RBD"], df["PROM_GRAL"], df["SIT_FIN"], df['ASISTENCIA'], df['LET_CUR'], df["COD_ENSE"], df["COD_ENSE2"], df["COD_JOR"]]
+        head_notas = ['agno', 'mrun', 'rbd', 'dgv_rbd', 'prom_gral', 'sit_fin', 'asistencia', 'let_cur', 'cod_ense', 'cod_ense2', 'cod_jor']
+        interface.df_to_sql(table_name='notas', engine=engine, data=data_notas, headers=head_notas, remove_duplicates=['agno','mrun'])
+        
+        print(df.columns.values.tolist())
+
+        interface.get_ram(info='Dataframe ' + str(year))
+        break
         print("-----")
     return dataframes
 
 
 if __name__ == "__main__":
+    interface.get_ram(info='Starting program')
     start_time = time.time()
-    interface.get_ram(info='Loading program')
-    dataframes = get_dataframes()
     
-    """
-    interface.ram(info='Loading program')
+    # Cargar los datos base
     interface.drop_dimensions()
     interface.create_dimensions()
     interface.insert_static_dimensions()
-    interface.ram(info='Program loaded')
-    """
+    
 
-    # Leemos los archivos
-    #df_2010 = read_file(year=2010, drops=['SIT_FIN_R'])
+    
+    # Instanciar todos los dataframes
+    dataframes = get_dataframes(2010)
+    interface.get_ram(info='Instanced all dataframes')
+    
+    del dataframes
+    
+    interface.get_ram(info='Dispose dataframes 2010-2019')
 
-    """
-    df_2011 = read_file(year=2011, drops=['COD_SEC', 'COD_ESPE', 'FEC_ING_ALU', 'SIT_FIN_R'])
-    df_2012 = read_file(year=2012, drops=['COD_SEC', 'COD_ESPE', 'SIT_FIN_R'])
-    df_2013 = read_file(year=2013, drops=['COD_SEC', 'COD_ESPE', 'COD_TIP_CUR', 'GD_ALU', 'COD_REG_ALU', 'COD_RAMA', 'SIT_FIN_R'])
-    df_2014 = read_file(year=2014, drops=['COD_SEC', 'COD_ESPE', 'COD_RAMA', 'COD_REG_ALU', 'GD_ALU', 'COD_TIP_CUR', 'COD_DEPE2'])
-    df_2015 = read_file(year=2015, drops=['COD_SEC', 'COD_ESPE', 'COD_DEPROV_RBD', 'NOM_DEPROV_RBD', 'COD_DEPE2', 'ESTADO_ESTAB', 'COD_TIP_CUR', 'GD_ALU', 'COD_REG_ALU', 'COD_RAMA', 'SIT_FIN_R'])
-    df_2016 = read_file(year=2016, drops=['COD_SEC', 'COD_ESPE', 'SIT_FIN_R’, ‘COD_RAMA’, ‘COD_REG_ALU’, ‘COD_DES_CUR’, ‘COD_TIP_CUR’, ‘ESTADO_ESTAB’, ‘COD_DEPE2’, ‘NOM_DEPROV_RBD’, ‘COD_DEPROV_RBD’])
-    df_2017 = read_file(year=2017, drops=['COD_SEC', 'COD_ESPE', 'COD_DEPROV_RBD’, ‘NOM_DEPROV_RBD’, ‘COD_DEPE2’, ‘ESTADO_ESTAB’, ‘COD_TIP_CUR’, ‘COD_DES_CUR’, ‘COD_REG_ALU’, ‘COD_RAMA’, ‘SIT_FIN_R’])
-    df_2018 = read_file(year=2018, drops=['COD_SEC', 'COD_ESPE', 'SIT_FIN_R’, ‘COD_RAMA’, ‘COD_REG_ALU’, ‘COD_DES_CUR’, ‘COD_TIP_CUR’, ‘ESTADO_ESTAB’, ‘COD_DEPE2’, ‘NOM_DEPROV_RBD’, ‘COD_DEPROV_RBD’, ‘NOM_REG_RBD_A’])
-    df_2019 = read_file(year=2019, drops=['COD_SEC', 'COD_ESPE', 'NOM_REG_RBD_A’, ‘COD_DEPROV_RBD’, ‘NOM_DEPROV_RBD’, ‘COD_2’, ‘ESTADO_ESTAB’, ‘COD_TIP_CUR’, ‘COD_DES_CUR’, ‘COD_REG_ALU’, ‘COD_RAMA’, ‘COD_MEN’, ‘SIT_FIN_R’])
-
-    ram(info='Final ram usage 2010-2019')
-
-    for col in df_2010.columns: 
-        print(col)
-    """
-    interface.get_ram(info='Dispose memory 2010-2019')
     print('Finished')

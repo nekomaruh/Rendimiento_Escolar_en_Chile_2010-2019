@@ -4,16 +4,21 @@ import os, psutil
 import pandas as pd
 import fnmatch
 
+def get_ram(info='unknown'):
+    # Obtiene la información de la ram utilizada durante la ejecución del programa
+    process = psutil.Process(os.getpid())
+    print('RAM:', process.memory_info()[0]/8000000, 'mb ('+info+')')
+
 def drop_dimensions():
     # Elimina todas las tablas que existen en la base de datos
     q.drop_tables()
-    print('Dimensions dropped successfully!')
+    get_ram(info='Tables dropped')
 
 def create_dimensions():
     # Crea las tablas estáticas
     q.create_static_tables()
     q.create_tables()
-    print('Dimensions created successfully!')
+    get_ram(info='Dimensions created')
 
 def insert_static_dimensions():
     # Inserta los valores a las tablas estáticas
@@ -30,18 +35,14 @@ def insert_static_dimensions():
     q.insert_dim_sec(st.data_sec)
     q.insert_dim_espe(st.data_espe)
     q.insert_dim_ense2(st.data_ense2)
-    print('Dimensions inserted successfully!')
-
-def get_ram(info='unknown'):
-    # Obtiene la información de la ram utilizada durante la ejecución del programa
-    process = psutil.Process(os.getpid())
-    print('RAM:', process.memory_info()[0]/8000000, 'mb ('+info+')')
+    get_ram(info='Dimensions inserted')
 
 def df_to_html(dataframe, year, num_rows):
     # Nota: No se asegura que la cantidad de columnas a exportar sea mayor al dataframe
     # Esta función solo la utilizamos para testing
     header = dataframe.head(num_rows)
     header.to_html("datasets_headers_pdf/df_"+year+".html")
+    get_ram(info='HTML exported '+str(year))
 
 def df_to_sql(table_name, engine, data, headers, remove_duplicates):
     # Sube los datos del dataframe a la base de datos
@@ -49,12 +50,15 @@ def df_to_sql(table_name, engine, data, headers, remove_duplicates):
     new_df = new_df.drop_duplicates(subset=remove_duplicates)
     new_df = new_df.reset_index(drop=True)
     new_df.to_sql(table_name,engine, method='multi', if_exists='append',index=False, chunksize=1000)
+    get_ram(info='Exported table "'+table_name+'"')
 
 def get_amount_of_csv():
     # Obtiene la cantidad de archivos .csv
     return len(fnmatch.filter(os.listdir('datasets/'), '*.csv'))
 
-
+def insert_dim_comuna(list):
+    q.insert_dim_com(list)
+    get_ram(info='Table comuna inserted')
 
 def get_required_columns(list):
     columns = ['NOM_REG_RBD'
@@ -87,4 +91,6 @@ def get_columns_to_drop():
     'COD_REG_ALU', 
     'COD_RAMA', 
     'COD_MEN', 
-    'SIT_FIN_R']
+    'SIT_FIN_R',
+    'SIT_FINAL_R',
+    'EDAD_ALU']

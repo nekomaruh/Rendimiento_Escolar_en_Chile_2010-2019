@@ -40,7 +40,6 @@ def drop_tables():
     cursor.execute("DROP TABLE IF EXISTS dim_region;")
     cursor.execute("DROP TABLE IF EXISTS dim_depe;")
     connection.commit()
-    print('Tables deleted successfully!')
 
 def create_static_tables():
 
@@ -137,7 +136,6 @@ def create_static_tables():
                     );""")
     
     connection.commit()
-    print("Tables created successfully!")
 
 
 def create_tables():
@@ -157,17 +155,13 @@ def create_tables():
                         NOM_RBD TEXT,
                         RURAL_RBD INTEGER,
                         COD_DEPE INTEGER,
-                        COD_ESPE INTEGER,
                         COD_REG_RBD INTEGER,
-                        COD_PRO_RBD INTEGER,
                         COD_SEC INTEGER,
                         COD_COM INTEGER,
                         primary key (RBD, DGV_RBD),
                         foreign key (RURAL_RBD) references dim_rural(RURAL_RBD),
                         foreign key (COD_DEPE) references dim_depe(COD_DEPE),
-                        foreign key (COD_ESPE) references dim_espe(COD_ESPE),
                         foreign key (COD_REG_RBD) references dim_region(COD_REG_RBD),
-                        foreign key (COD_PRO_RBD) references dim_provincia(COD_PRO_RBD),
                         foreign key (COD_SEC) references dim_sec(COD_SEC),
                         foreign key (COD_COM) references dim_com(COD_COM)
                     );""")
@@ -178,22 +172,21 @@ def create_tables():
                         DGV_RBD INTEGER,
                         PROM_GRAL FLOAT,
                         SIT_FIN TEXT,
+                        ASISTENCIA INTEGER,
+                        LET_CUR INTEGER,
                         COD_ENSE INTEGER,
                         COD_ENSE2 INTEGER,
                         COD_JOR INTEGER,
-                        COD_GRADO INTEGER,
                         primary key (AGNO, MRUN),
                         foreign key (MRUN) references alumno(MRUN),
                         foreign key (RBD, DGV_RBD) references establecimiento(RBD, DGV_RBD),
                         foreign key (SIT_FIN) references dim_sit_fin(SIT_FIN),
                         foreign key (COD_ENSE) references dim_ense(COD_ENSE),
                         foreign key (COD_ENSE2) references dim_ense2(COD_ENSE2),
-                        foreign key (COD_JOR) references dim_jornada(COD_JOR),
-                        foreign key (COD_ENSE, COD_GRADO) references dim_grado(COD_ENSE, COD_GRADO)
+                        foreign key (COD_JOR) references dim_jornada(COD_JOR)
                     );""")
     
     connection.commit()
-    print('Tables deleted successfully!')
 
 def insert_dim_depe(list):
     for i in list:

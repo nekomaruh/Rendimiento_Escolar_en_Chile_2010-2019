@@ -161,6 +161,7 @@ def get_dataframes(start_time, year=2010):
             df_com = df_com.reset_index(drop=True)
             # Insertamos datos a la dimensión comuna
             interface.insert_dim_comuna(df_com.values.tolist())
+            interface.get_time(start_time)
             # Elimina residuales ram
             del headers_com, data_com_rbd, df_com_rbd, data_com_alu, df_com_alu, df_com
 
@@ -177,20 +178,22 @@ def get_dataframes(start_time, year=2010):
         data_alumno = [df["MRUN"], df["FEC_NAC_ALU"],df["GEN_ALU"], df["COD_COM_ALU"], df["INT_ALU"]]
         headers_alumno = ["mrun", "fec_nac_alu", "gen_alu", "cod_com", "int_alu"]
         interface.df_to_sql(table_name='alumno', engine=engine, data=data_alumno, headers=headers_alumno, remove_duplicates=['mrun'])
+        interface.get_time(start_time)
         
         # Agregar establecimientos
         data_establecimiento = [df["RBD"], df["DGV_RBD"], df["NOM_RBD"], df["RURAL_RBD"], df["COD_DEPE"], df["COD_REG_RBD"], df["COD_SEC"], df["COD_COM_RBD"]]
         headers_establecimiento = ['rbd', 'dgv_rbd', 'nom_rbd', 'rural_rbd', 'cod_depe', 'cod_reg_rbd', 'cod_sec', 'cod_com']
         interface.df_to_sql(table_name='establecimiento', engine=engine, data=data_establecimiento, headers=headers_establecimiento, remove_duplicates=['rbd','dgv_rbd'])
+        interface.get_time(start_time)
 
         # Agregar notas
         data_notas = [df["AGNO"], df["MRUN"], df["RBD"], df["DGV_RBD"], df["PROM_GRAL"], df["SIT_FIN"], df['ASISTENCIA'], df['LET_CUR'], df["COD_ENSE"], df["COD_ENSE2"], df["COD_JOR"]]
         head_notas = ['agno', 'mrun', 'rbd', 'dgv_rbd', 'prom_gral', 'sit_fin', 'asistencia', 'let_cur', 'cod_ense', 'cod_ense2', 'cod_jor']
         interface.df_to_sql(table_name='notas', engine=engine, data=data_notas, headers=head_notas, remove_duplicates=['agno','mrun'])
-  
+        interface.get_time(start_time)
         #print(df.columns.values.tolist())
 
-        interface.get_ram(info='Dataframe ' + str(year))
+        interface.get_ram(info='Tables added to year: ' + str(year))
         interface.get_time(start_time)
     #return dataframes
 

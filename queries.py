@@ -127,7 +127,7 @@ def create_static_tables():
 
 def create_tables():
     cursor.execute("""CREATE TABLE IF NOT EXISTS alumno(
-                        MRUN TEXT PRIMARY KEY NOT NULL,
+                        MRUN TEXT PRIMARY KEY NOT NULL UNIQUE,
                         FEC_NAC_ALU INTEGER,
                         GEN_ALU INTEGER,
                         COD_COM INTEGER,

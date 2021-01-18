@@ -89,6 +89,9 @@ def get_dataframes(start_time, year=2010):
             interface.get_time(start_time)
             # Elimina residuales ram
             del headers_com, data_com_rbd, df_com_rbd, data_com_alu, df_com_alu, df_com
+        
+        dataframes.drop(columns=['NOM_COM_RBD','NOM_COM_ALU'], inplace=True, axis=1)
+
         """
         # Agregar establecimientos
         data_establecimiento = [df["RBD"], df["DGV_RBD"], df["NOM_RBD"], df["RURAL_RBD"], df["COD_DEPE"], df["COD_REG_RBD"], df["COD_SEC"], df["COD_COM_RBD"]]
@@ -109,16 +112,15 @@ def get_dataframes(start_time, year=2010):
         interface.get_time(start_time)
         #print(df.columns.values.tolist())
         """
-        if dataframes == None:
+        if dataframes is None:
             dataframes = df
         else:
             dataframes = pd.concat([dataframes, df], axis=1)
-        interface.get_ram(info='Added year: ' + str(year))
+        interface.get_ram(info='Added year to dataframe: ' + str(year))
         interface.get_time(start_time)
-        break
 
-    dataframes.drop(columns=['NOM_COM_RBD','NOM_COM_ALU'], inplace=True, axis=1)
-    interface.get_ram(info='Dispose column "comuna"')
+    
+    interface.get_ram(info='Instance dataframe 2010-2019')
     interface.get_time(start_time) 
     return dataframes
 
@@ -135,8 +137,6 @@ if __name__ == "__main__":
     
     # Instanciar todos los dataframes en uno general
     df = get_dataframes(start_time, year=2010)
-    interface.get_ram(info='Instanced dataframe 2010-2019')
-    interface.get_time(start_time)
     
     """
     # --- LIMPIAR LOS DATOS ---

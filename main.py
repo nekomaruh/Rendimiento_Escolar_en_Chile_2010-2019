@@ -1,12 +1,11 @@
 # Libraries
-from os import error
 from numpy.core.defchararray import encode
 import pandas as pd
-import time
 import sqlalchemy
 import numpy as np
 import interface
 from sqlalchemy import event
+import time
 
 # Exportamos hacia la base de datos en postgres
 engine = sqlalchemy.create_engine(
@@ -89,12 +88,12 @@ def read_file(year, drops):
     head_notas = ['agno', 'mrun', 'rbd', 'dgv_rbd', 'prom_gral', 'sit_fin', 'cod_ense', 'cod_ense2', 'cod_jor', 'cod_grado']
     interface.df_to_sql(table_name='notas', engine=engine, data=data_notas, headers=head_notas, remove_duplicates=['agno','mrun'])
     """
-    
+
     interface.ram(info='Dataframe ' + str(year))
     return df
 
 
-def get_dataframes(year=2010):
+def get_dataframes(start_time, year=2010):
     #dataframes = []
     columns_to_drop = interface.get_columns_to_drop()
     amount_csv = interface.get_amount_of_csv()
@@ -108,7 +107,8 @@ def get_dataframes(year=2010):
         if year == 2016 or year == 2018 or year == 2019:
             encoding += '-sig'
 
-        print('Reading:', path, '(', encoding, ')')
+        print('Reading: '+path+' ('+encoding+')')
+        interface.get_time(start_time)
         df = pd.read_csv(path, sep=';', low_memory=False, encoding=encoding)
         df.columns = map(str.upper, df.columns)
         #required_columns = interface.get_required_columns(list=df_current_year.columns.tolist())
@@ -191,7 +191,7 @@ def get_dataframes(year=2010):
         #print(df.columns.values.tolist())
 
         interface.get_ram(info='Dataframe ' + str(year))
-        print("-----")
+        interface.get_time(start_time)
     #return dataframes
 
 
@@ -203,14 +203,15 @@ if __name__ == "__main__":
     interface.drop_dimensions()
     interface.create_dimensions()
     interface.insert_static_dimensions()
-    print('Static data loaded')
+    interface.get_time(start_time)
     
     # Instanciar todos los dataframes
-    get_dataframes(year=2010)
+    get_dataframes(start_time, year=2010)
     interface.get_ram(info='Instanced all dataframes')
-    
+    interface.get_time(start_time)
+
     #del dataframes
     
-    interface.get_ram(info='Dispose dataframes 2010-2019')
+    interface.get_ram(info='Process finished')
+    interface.get_time(start_time)
 
-    print('Finished')

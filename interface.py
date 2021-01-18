@@ -3,6 +3,7 @@ import static_tables as st
 import os, psutil
 import pandas as pd
 import fnmatch
+import time
 
 def get_ram(info='unknown'):
     # Obtiene la información de la ram utilizada durante la ejecución del programa
@@ -12,13 +13,13 @@ def get_ram(info='unknown'):
 def drop_dimensions():
     # Elimina todas las tablas que existen en la base de datos
     q.drop_tables()
-    get_ram(info='Tables dropped')
+    get_ram(info='Dropped all tables')
 
 def create_dimensions():
     # Crea las tablas estáticas
     q.create_static_tables()
     q.create_tables()
-    get_ram(info='Dimensions created')
+    get_ram(info='Created all tables')
 
 def insert_static_dimensions():
     # Inserta los valores a las tablas estáticas
@@ -35,7 +36,7 @@ def insert_static_dimensions():
     q.insert_dim_sec(st.data_sec)
     q.insert_dim_espe(st.data_espe)
     q.insert_dim_ense2(st.data_ense2)
-    get_ram(info='Dimensions inserted')
+    get_ram(info='Static tables inserted')
 
 def df_to_html(dataframe, year, num_rows):
     # Nota: No se asegura que la cantidad de columnas a exportar sea mayor al dataframe
@@ -46,15 +47,21 @@ def df_to_html(dataframe, year, num_rows):
 
 def df_to_sql(table_name, engine, data, headers, remove_duplicates):
     # Sube los datos del dataframe a la base de datos
+    get_ram(info='Inserting data to "'+table_name+'"')
     new_df = pd.concat(data, axis=1, keys=headers)
     new_df = new_df.drop_duplicates(subset=remove_duplicates)
     new_df = new_df.reset_index(drop=True)
     new_df.to_sql(table_name,engine, method='multi', if_exists='append',index=False, chunksize=1000)
-    get_ram(info='Exported table "'+table_name+'"')
+    get_ram(info='Data inserted "'+table_name+'"')
 
 def get_amount_of_csv():
     # Obtiene la cantidad de archivos .csv
     return len(fnmatch.filter(os.listdir('datasets/'), '*.csv'))
+
+def get_time(start_time):
+    end_time = time.time()
+    difference = round(end_time-start_time,4)
+    return print('Time: '+str(difference)+' seconds')
 
 def insert_dim_comuna(list):
     q.insert_dim_com(list)

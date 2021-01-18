@@ -23,6 +23,7 @@ def get_dataframes(start_time, year=2010):
     columns_to_drop = interface.get_columns_to_drop()
     amount_csv = interface.get_amount_of_csv()
     for year in range(year, year+amount_csv):
+        print('--------------------')
         path = "datasets/Rendimiento por estudiante "+str(year)+".csv"
    
         # Leemos los datos y separamos por ; porque algunos nombres de establecimientos poseen comas y dan error
@@ -70,7 +71,7 @@ def get_dataframes(start_time, year=2010):
         """
         #dataframes.append(df)
         #print('Cantidad de datos:', len(df))
-
+        """
         if year == 2010:
             # Crear comunas de establecimiento y alumno, estan en todos los años
             headers_com = ["COD_COM", "NOM_COM"]
@@ -90,8 +91,8 @@ def get_dataframes(start_time, year=2010):
             # Elimina residuales ram
             del headers_com, data_com_rbd, df_com_rbd, data_com_alu, df_com_alu, df_com
         
-        dataframes.drop(columns=['NOM_COM_RBD','NOM_COM_ALU'], inplace=True, axis=1)
-
+        df.drop(columns=['NOM_COM_RBD','NOM_COM_ALU'], inplace=True, axis=1)
+        """
         """
         # Agregar establecimientos
         data_establecimiento = [df["RBD"], df["DGV_RBD"], df["NOM_RBD"], df["RURAL_RBD"], df["COD_DEPE"], df["COD_REG_RBD"], df["COD_SEC"], df["COD_COM_RBD"]]
@@ -115,11 +116,12 @@ def get_dataframes(start_time, year=2010):
         if dataframes is None:
             dataframes = df
         else:
-            dataframes = pd.concat([dataframes, df], axis=1)
+            dataframes = pd.concat([dataframes, df], ignore_index=True)
+        #print(dataframes.columns.values.tolist())
         interface.get_ram(info='Added year to dataframe: ' + str(year))
         interface.get_time(start_time)
 
-    
+    print('--------------------')
     interface.get_ram(info='Instance dataframe 2010-2019')
     interface.get_time(start_time) 
     return dataframes
@@ -138,7 +140,6 @@ if __name__ == "__main__":
     # Instanciar todos los dataframes en uno general
     df = get_dataframes(start_time, year=2010)
     
-    """
     # --- LIMPIAR LOS DATOS ---
     # Crear comunas de establecimiento y alumno, estan en todos los años
     headers_com = ["COD_COM", "NOM_COM"]
@@ -160,7 +161,6 @@ if __name__ == "__main__":
     df.drop(columns=['NOM_COM','NOM_COM_ALU'], inplace=True, axis=1)
     interface.get_ram(info='Dispose column comuna')
     interface.get_time(start_time) 
-    """
 
     # Agregar establecimientos
     data_establecimiento = [df["RBD"], df["DGV_RBD"], df["NOM_RBD"], df["RURAL_RBD"], df["COD_DEPE"], df["COD_REG_RBD"], df["COD_SEC"], df["COD_COM_RBD"]]
@@ -169,18 +169,18 @@ if __name__ == "__main__":
     del data_establecimiento, headers_establecimiento
     interface.get_time(start_time)
 
-    # Agregar notas
-    data_notas = [df["AGNO"], df["MRUN"], df["RBD"], df["DGV_RBD"], df["PROM_GRAL"], df["SIT_FIN"], df['ASISTENCIA'], df['LET_CUR'], df["COD_ENSE"], df["COD_ENSE2"], df["COD_JOR"]]
-    head_notas = ['agno', 'mrun', 'rbd', 'dgv_rbd', 'prom_gral', 'sit_fin', 'asistencia', 'let_cur', 'cod_ense', 'cod_ense2', 'cod_jor']
-    interface.df_to_sql(table_name='notas', engine=engine, data=data_notas, headers=head_notas, remove_duplicates=['agno','mrun'])
-    del data_notas, head_notas
-    interface.get_time(start_time)
-
     # Agregar alumnos
     data_alumno = [df["MRUN"], df["FEC_NAC_ALU"],df["GEN_ALU"], df["COD_COM_ALU"], df["INT_ALU"]]
     headers_alumno = ["mrun", "fec_nac_alu", "gen_alu", "cod_com", "int_alu"]
     interface.df_to_sql(table_name='alumno', engine=engine, data=data_alumno, headers=headers_alumno, remove_duplicates=['mrun'])
     del data_alumno, headers_alumno
+    interface.get_time(start_time)
+
+    # Agregar notas
+    data_notas = [df["AGNO"], df["MRUN"], df["RBD"], df["DGV_RBD"], df["PROM_GRAL"], df["SIT_FIN"], df['ASISTENCIA'], df['LET_CUR'], df["COD_ENSE"], df["COD_ENSE2"], df["COD_JOR"]]
+    head_notas = ['agno', 'mrun', 'rbd', 'dgv_rbd', 'prom_gral', 'sit_fin', 'asistencia', 'let_cur', 'cod_ense', 'cod_ense2', 'cod_jor']
+    interface.df_to_sql(table_name='notas', engine=engine, data=data_notas, headers=head_notas, remove_duplicates=['agno','mrun'])
+    del data_notas, head_notas
     interface.get_time(start_time)
 
     del df

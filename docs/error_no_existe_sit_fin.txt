@@ -1,0 +1,48 @@
+Traceback (most recent call last):
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\sqlalchemy\engine\base.py", line 1277, in _execute_context
+    cursor, statement, parameters, context
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\sqlalchemy\engine\default.py", line 593, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.ForeignKeyViolation: inserción o actualización en la tabla «notas» viola la llave foránea «notas_sit_fin_fkey»
+DETAIL:  La llave (sit_fin)=( ) no está presente en la tabla «dim_sit_fin».
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:/Users/Esteban/Documents/GitHub/Rendimiento_Escolar_en_Chile_2010-2019/main.py", line 153, in <module>
+    interface.df_to_sql(table_name='notas', engine=engine, data=data_notas, headers=head_notas, remove_duplicates=['agno','mrun'])
+  File "c:\Users\Esteban\Documents\GitHub\Rendimiento_Escolar_en_Chile_2010-2019\interface.py", line 60, in df_to_sql
+    df.to_sql(table_name,engine, method='multi', if_exists='append',index=False, chunksize=100000)
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\pandas\core\generic.py", line 2615, in to_sql
+    method=method,
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\pandas\io\sql.py", line 598, in to_sql
+    method=method,
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\pandas\io\sql.py", line 1406, in to_sql
+    raise err
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\pandas\io\sql.py", line 1398, in to_sql
+    table.insert(chunksize, method=method)
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\pandas\io\sql.py", line 830, in insert
+    exec_insert(conn, keys, chunk_iter)
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\pandas\io\sql.py", line 758, in _execute_insert_multi
+    conn.execute(self.table.insert(data))
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\sqlalchemy\engine\base.py", line 1011, in execute
+    return meth(self, multiparams, params)
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\sqlalchemy\sql\elements.py", line 298, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\sqlalchemy\engine\base.py", line 1130, in _execute_clauseelement
+    distilled_params,
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\sqlalchemy\engine\base.py", line 1317, in _execute_context
+    e, statement, parameters, cursor, context
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\sqlalchemy\engine\base.py", line 1511, in _handle_dbapi_exception
+    sqlalchemy_exception, with_traceback=exc_info[2], from_=e
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\sqlalchemy\util\compat.py", line 182, in raise_
+    raise exception
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\sqlalchemy\engine\base.py", line 1277, in _execute_context
+    cursor, statement, parameters, context
+  File "C:\Users\Esteban\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\sqlalchemy\engine\default.py", line 593, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.IntegrityError: (psycopg2.errors.ForeignKeyViolation) inserción o actualización en la tabla «notas» viola la llave foránea «notas_sit_fin_fkey»
+DETAIL:  La llave (sit_fin)=( ) no está presente en la tabla «dim_sit_fin».
+
+[SQL: INSERT INTO notas (agno, mrun, rbd, dgv_rbd, prom_gral, sit_fin, asistencia, let_cur, cod_ense, cod_ense2, cod_jor) VALUES (%(agno_m0)s, %(mrun_m0)s, %(rbd_m0)s, %(dgv_rbd_m0)s, %(prom_gral_m0)s, %(sit_fin_m0)s, %(asistencia_m0)s, %(let_cur_m0)s, %(cod_ense_m0)s, %(cod_ense2_m0)s, %(cod_jor_m0)s), (%(agno_m1)s, %(mrun_m1)s, %(rbd_m1)s, %(dgv_rbd_m1)s, %(prom_gral_m1)s, %(sit_fin_m1)s, %(asistencia_m1)s, %(let_cur_m1)s, %(cod_ense_m1)s, %(cod_ense2_m1)s, %(cod_jor_m1)s), (%(agno_m2)s, %(mrun_m2)s, %(rbd_m2)s, %(dgv_rbd_m2)s, %(prom_gral_m2)s, %(sit_fin_m2)s, %(asistencia_m2)s, %(let_cur_m2)s, %(cod_ense_m2)s, %(cod_ense2_m2)s, %(cod_jor_m2)s), (%(agno_m3)s, %(mrun_m3)s, %(rbd_m3)s, %(dgv_rbd_m3)s, %(prom_gral_m3)s, %(sit_fin_m3)s, %(asistencia_m3)s, %(let_cur_m3)s, %(cod_ense_m3)s, %(cod_ense2_m3)s, %(cod_jor_m3)s), (%(agno_m4)s, %(mrun_m4)s

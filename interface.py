@@ -52,13 +52,13 @@ def df_to_sql(table_name, engine, data, headers, remove_duplicates):
     #new_df = new_df.drop_duplicates(subset=remove_duplicates)
     print(df.head())
     print(df.dtypes)
-    get_ram(info='Drop duplicates from "'+table_name+'"')
+    get_ram(info='Dropping duplicates from "'+table_name+'"')
     df.drop_duplicates(subset=remove_duplicates, keep="first", inplace=True)
     #new_df = new_df.reset_index(drop=True)
     df.reset_index(drop=True, inplace=True)
-    get_ram(info='Inserting data to "'+table_name+'"...')
+    get_ram(info='Uploading to database table "'+table_name+'"...')
     df.to_sql(table_name,engine, method='multi', if_exists='append',index=False, chunksize=100000)
-    get_ram(info='Data inserted to "'+table_name+'"')
+    get_ram(info='Data "'+table_name+'" inserted to database')
 
 def get_amount_of_csv():
     # Obtiene la cantidad de archivos .csv
@@ -70,27 +70,9 @@ def get_time(start_time):
     return print('Time: '+str(difference)+' seconds')
 
 def insert_dim_comuna(list):
-    get_ram(info='Inserting data to "comuna"')
+    get_ram(info='Uploading to database table "comuna"...')
     q.insert_dim_com(list)
-    get_ram(info='Data inserted to "comuna"')
-
-def get_required_columns(list):
-    columns = ['NOM_REG_RBD'
-            'COD_PRO_RBD'
-            'COD_DEPE2'
-            'COD_ENSE2'
-            'COD_JOR'
-            'EDAD_ALU'
-            'INT_ALU'
-            'GD_ALU']
-    
-    required_columns = []
-
-    for col in columns:
-        if not col in list:
-            required_columns.append(col)
-
-    return required_columns
+    get_ram(info='Data "comuna" inserted to database')
 
 def get_columns_to_drop():
     return ['FEC_ING_ALU',

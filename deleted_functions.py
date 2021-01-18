@@ -146,3 +146,23 @@ def read_file(year, drops):
 
     interface.ram(info='Dataframe ' + str(year))
     return df
+
+
+
+def get_required_columns(list):
+    columns = ['NOM_REG_RBD'
+            'COD_PRO_RBD'
+            'COD_DEPE2'
+            'COD_ENSE2'
+            'COD_JOR'
+            'EDAD_ALU'
+            'INT_ALU'
+            'GD_ALU']
+    
+    required_columns = []
+
+    for col in columns:
+        if not col in list:
+            required_columns.append(col)
+
+    return required_columns

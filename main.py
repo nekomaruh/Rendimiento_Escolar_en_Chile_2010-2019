@@ -12,13 +12,11 @@ from sqlalchemy import event
 engine = sqlalchemy.create_engine(
     'postgresql://postgres:postgres@localhost:5432/rendimiento_escolar')
 
-
 @event.listens_for(engine, 'before_cursor_execute')
 def receive_before_cursor_execute(conn, cursor, statement, params, context, executemany):
     if executemany:
         cursor.fast_executemany = True
         cursor.commit()
-
 
 def read_file(year, drops):
     print('Reading dataset', year)
@@ -91,21 +89,27 @@ def read_file(year, drops):
     head_notas = ['agno', 'mrun', 'rbd', 'dgv_rbd', 'prom_gral', 'sit_fin', 'cod_ense', 'cod_ense2', 'cod_jor', 'cod_grado']
     interface.df_to_sql(table_name='notas', engine=engine, data=data_notas, headers=head_notas, remove_duplicates=['agno','mrun'])
     """
-
+    
     interface.ram(info='Dataframe ' + str(year))
     return df
 
 
 def get_dataframes(year=2010):
-    dataframes = []
+    #dataframes = []
     columns_to_drop = interface.get_columns_to_drop()
     amount_csv = interface.get_amount_of_csv()
     for year in range(year, year+amount_csv):
         path = "datasets/Rendimiento por estudiante "+str(year)+".csv"
-        print('Reading:', path)
    
         # Leemos los datos y separamos por ; porque algunos nombres de establecimientos poseen comas y dan error
-        df = pd.read_csv(path, sep=';', low_memory=False, encoding='latin')
+        encoding = 'utf-8'
+        if year == 2014 or year == 2015:
+            encoding = 'latin'
+        if year == 2016 or year == 2018 or year == 2019:
+            encoding += '-sig'
+
+        print('Reading:', path, '(', encoding, ')')
+        df = pd.read_csv(path, sep=';', low_memory=False, encoding=encoding)
         df.columns = map(str.upper, df.columns)
         #required_columns = interface.get_required_columns(list=df_current_year.columns.tolist())
         #print(required_columns)
@@ -135,12 +139,14 @@ def get_dataframes(year=2010):
         if year >= 2014: # Rellenar con vacíos
              df['INT_ALU'] = np.nan
 
+        """
         if 'Ï»¿AGNO' in df_columns:
             df = df.rename(columns={"Ï»¿AGNO": "AGNO"})
+        """
+        #dataframes.append(df)
+        #print('Cantidad de datos:', len(df))
 
-        dataframes.append(df)
-        
-        if year >= 2010:
+        if year == 2010:
             # Crear comunas de establecimiento y alumno, estan en todos los años
             headers_com = ["COD_COM", "NOM_COM"]
             # Comunas donde están los establecimientos
@@ -157,7 +163,6 @@ def get_dataframes(year=2010):
             interface.insert_dim_comuna(df_com.values.tolist())
             # Elimina residuales ram
             del headers_com, data_com_rbd, df_com_rbd, data_com_alu, df_com_alu, df_com
-        
 
         """
         data_alu = [df["MRUN"], df["FEC_NAC_ALU"],df["GEN_ALU"], df["COD_COM_ALU"], df["INT_ALU"]]
@@ -168,32 +173,26 @@ def get_dataframes(year=2010):
         df_alu.to_sql('alumno',engine, method='multi', if_exists='append',index=False)
         """
 
-        
+        # Agregar alumnos
         data_alumno = [df["MRUN"], df["FEC_NAC_ALU"],df["GEN_ALU"], df["COD_COM_ALU"], df["INT_ALU"]]
         headers_alumno = ["mrun", "fec_nac_alu", "gen_alu", "cod_com", "int_alu"]
         interface.df_to_sql(table_name='alumno', engine=engine, data=data_alumno, headers=headers_alumno, remove_duplicates=['mrun'])
         
-
-        #print('Cantidad de datos:', len(df))
         # Agregar establecimientos
-        
         data_establecimiento = [df["RBD"], df["DGV_RBD"], df["NOM_RBD"], df["RURAL_RBD"], df["COD_DEPE"], df["COD_REG_RBD"], df["COD_SEC"], df["COD_COM_RBD"]]
         headers_establecimiento = ['rbd', 'dgv_rbd', 'nom_rbd', 'rural_rbd', 'cod_depe', 'cod_reg_rbd', 'cod_sec', 'cod_com']
         interface.df_to_sql(table_name='establecimiento', engine=engine, data=data_establecimiento, headers=headers_establecimiento, remove_duplicates=['rbd','dgv_rbd'])
-        
 
         # Agregar notas
-        
         data_notas = [df["AGNO"], df["MRUN"], df["RBD"], df["DGV_RBD"], df["PROM_GRAL"], df["SIT_FIN"], df['ASISTENCIA'], df['LET_CUR'], df["COD_ENSE"], df["COD_ENSE2"], df["COD_JOR"]]
         head_notas = ['agno', 'mrun', 'rbd', 'dgv_rbd', 'prom_gral', 'sit_fin', 'asistencia', 'let_cur', 'cod_ense', 'cod_ense2', 'cod_jor']
         interface.df_to_sql(table_name='notas', engine=engine, data=data_notas, headers=head_notas, remove_duplicates=['agno','mrun'])
-        
-        print(df.columns.values.tolist())
+  
+        #print(df.columns.values.tolist())
 
         interface.get_ram(info='Dataframe ' + str(year))
-        break
         print("-----")
-    return dataframes
+    #return dataframes
 
 
 if __name__ == "__main__":
@@ -204,14 +203,13 @@ if __name__ == "__main__":
     interface.drop_dimensions()
     interface.create_dimensions()
     interface.insert_static_dimensions()
-    
-
+    print('Static data loaded')
     
     # Instanciar todos los dataframes
-    dataframes = get_dataframes(2010)
+    get_dataframes(year=2010)
     interface.get_ram(info='Instanced all dataframes')
     
-    del dataframes
+    #del dataframes
     
     interface.get_ram(info='Dispose dataframes 2010-2019')
 

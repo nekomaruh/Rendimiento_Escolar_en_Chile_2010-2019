@@ -160,7 +160,7 @@ def create_tables():
                         PROM_GRAL FLOAT,
                         SIT_FIN TEXT,
                         ASISTENCIA INTEGER,
-                        LET_CUR CHAR,
+                        LET_CUR TEXT,
                         COD_ENSE INTEGER,
                         COD_ENSE2 INTEGER,
                         COD_JOR INTEGER,

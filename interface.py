@@ -51,8 +51,8 @@ def df_to_sql(table_name, engine, data, headers, remove_duplicates):
     new_df = pd.concat(data, axis=1, keys=headers)
     new_df = new_df.drop_duplicates(subset=remove_duplicates)
     new_df = new_df.reset_index(drop=True)
-    new_df.to_sql(table_name,engine, method='multi', if_exists='append',index=False, chunksize=1000)
-    get_ram(info='Data inserted "'+table_name+'"')
+    new_df.to_sql(table_name,engine, method='multi', if_exists='append',index=False, chunksize=20000)
+    get_ram(info='Data inserted to "'+table_name+'"')
 
 def get_amount_of_csv():
     # Obtiene la cantidad de archivos .csv

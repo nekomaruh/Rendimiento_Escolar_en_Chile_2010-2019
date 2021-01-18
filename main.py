@@ -158,7 +158,7 @@ if __name__ == "__main__":
     interface.get_time(start_time)
     # Elimina residuales ram
     del headers_com, data_com_rbd, df_com_rbd, data_com_alu, df_com_alu, df_com
-    df.drop(columns=['NOM_COM','NOM_COM_ALU'], inplace=True, axis=1)
+    df.drop(columns=['NOM_COM_RBD','NOM_COM_ALU'], inplace=True, axis=1)
     interface.get_ram(info='Dispose column comuna')
     interface.get_time(start_time) 
 

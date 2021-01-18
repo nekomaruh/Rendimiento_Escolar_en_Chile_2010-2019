@@ -9,7 +9,7 @@ import time
 
 # Exportamos hacia la base de datos en postgres
 engine = sqlalchemy.create_engine(
-    'postgresql://postgres:postgres@localhost:5432/rendimiento_escolar', executemany_mode='batch')
+    'postgresql://postgres:postgres@localhost:5432/rendimiento_escolar')
 
 @event.listens_for(engine, 'before_cursor_execute')
 def receive_before_cursor_execute(conn, cursor, statement, params, context, executemany):
@@ -39,6 +39,8 @@ def get_dataframes(start_time, year=2010):
         df.columns = map(str.upper, df.columns)
         #required_columns = interface.get_required_columns(list=df_current_year.columns.tolist())
         #print(required_columns)
+        #df['MRUN'] = df['MRUN'].astype('string')
+
         drop = []
         df_columns = df.columns.values.tolist()
         for column in columns_to_drop:
@@ -60,6 +62,7 @@ def get_dataframes(start_time, year=2010):
         
         if year <= 2013:  # Esta solo en los años 2010-2013
             df['INT_ALU'] = df['INT_ALU'].replace(['.'], 2)
+            df['INT_ALU'] = df['INT_ALU'].replace([' '], 2)
             df["COD_ENSE2"] = np.nan # Está en 2014+
 
         if year >= 2014: # Rellenar con vacíos
@@ -113,10 +116,12 @@ def get_dataframes(start_time, year=2010):
         interface.get_time(start_time)
         #print(df.columns.values.tolist())
         """
+        #print(df.dtypes)
         if dataframes is None:
             dataframes = df
         else:
             dataframes = pd.concat([dataframes, df], ignore_index=True)
+        del df
         #print(dataframes.columns.values.tolist())
         interface.get_ram(info='Added year to dataframe: ' + str(year))
         interface.get_time(start_time)
@@ -130,16 +135,25 @@ def get_dataframes(start_time, year=2010):
 if __name__ == "__main__":
     interface.get_ram(info='Starting program')
     start_time = time.time()
-    
+    """
     # Cargar los datos base
     interface.drop_dimensions()
     interface.create_dimensions()
     interface.insert_static_dimensions()
     interface.get_time(start_time)
-    
+    """
     # Instanciar todos los dataframes en uno general
     df = get_dataframes(start_time, year=2010)
+    interface.get_ram(info='Converting types from dataframe')
+    interface.get_time(start_time)
+    print(df.dtypes)
+    df['MRUN'] = df['MRUN'].astype('string')
     
+    #df = df.convertDTypes()
+    interface.get_ram(info='Types converted')
+    interface.get_time(start_time)
+    print(df.dtypes)
+    """
     # --- LIMPIAR LOS DATOS ---
     # Crear comunas de establecimiento y alumno, estan en todos los años
     headers_com = ["COD_COM", "NOM_COM"]
@@ -168,7 +182,7 @@ if __name__ == "__main__":
     interface.df_to_sql(table_name='establecimiento', engine=engine, data=data_establecimiento, headers=headers_establecimiento, remove_duplicates=['rbd','dgv_rbd'])
     del data_establecimiento, headers_establecimiento
     interface.get_time(start_time)
-
+    """
     # Agregar alumnos
     data_alumno = [df["MRUN"], df["FEC_NAC_ALU"],df["GEN_ALU"], df["COD_COM_ALU"], df["INT_ALU"]]
     headers_alumno = ["mrun", "fec_nac_alu", "gen_alu", "cod_com", "int_alu"]

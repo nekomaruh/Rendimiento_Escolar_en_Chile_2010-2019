@@ -47,11 +47,17 @@ def df_to_html(dataframe, year, num_rows):
 
 def df_to_sql(table_name, engine, data, headers, remove_duplicates):
     # Sube los datos del dataframe a la base de datos
-    get_ram(info='Inserting data to "'+table_name+'"')
-    new_df = pd.concat(data, axis=1, keys=headers)
-    new_df = new_df.drop_duplicates(subset=remove_duplicates)
-    new_df = new_df.reset_index(drop=True)
-    new_df.to_sql(table_name,engine, method='multi', if_exists='append',index=False, chunksize=20000)
+    get_ram(info='Creating dataframe "'+table_name+'"')
+    df = pd.concat(data, axis=1, keys=headers)
+    #new_df = new_df.drop_duplicates(subset=remove_duplicates)
+    print(df.head())
+    print(df.dtypes)
+    get_ram(info='Drop duplicates from "'+table_name+'"')
+    df.drop_duplicates(subset=remove_duplicates, keep="first", inplace=True)
+    #new_df = new_df.reset_index(drop=True)
+    df.reset_index(drop=True, inplace=True)
+    get_ram(info='Inserting data to "'+table_name+'"...')
+    df.to_sql(table_name,engine, method='multi', if_exists='append',index=False, chunksize=100000)
     get_ram(info='Data inserted to "'+table_name+'"')
 
 def get_amount_of_csv():
@@ -64,8 +70,9 @@ def get_time(start_time):
     return print('Time: '+str(difference)+' seconds')
 
 def insert_dim_comuna(list):
+    get_ram(info='Inserting data to "comuna"')
     q.insert_dim_com(list)
-    get_ram(info='Table comuna inserted')
+    get_ram(info='Data inserted to "comuna"')
 
 def get_required_columns(list):
     columns = ['NOM_REG_RBD'

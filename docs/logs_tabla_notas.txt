@@ -1,0 +1,356 @@
+RAM: 8.574976 mb (Starting program)
+------------------------------------------------------------ 
+Reading: datasets/Rendimiento por estudiante 2010.csv (utf-8)
+Time: 0.001 seconds
+AGNO             int64
+RBD              int64
+DGV_RBD          int64
+NOM_RBD         object
+COD_DEPE         int64
+COD_REG_RBD      int64
+COD_COM_RBD      int64
+NOM_COM_RBD     object
+RURAL_RBD        int64
+COD_ENSE         int64
+COD_GRADO        int64
+LET_CUR         object
+MRUN             int64
+GEN_ALU          int64
+FEC_NAC_ALU      int64
+INT_ALU          int64
+COD_COM_ALU      int64
+NOM_COM_ALU     object
+COD_SEC         object
+COD_ESPE        object
+PROM_GRAL      float64
+ASISTENCIA       int64
+SIT_FIN         object
+COD_PRO_RBD    float64
+COD_JOR        float64
+COD_ENSE2      float64
+dtype: object
+RAM: 122.259968 mb (Added year to dataframe: 2010)
+Time: 14.3487 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2011.csv (utf-8)
+Time: 14.3487 seconds
+AGNO             int64
+RBD              int64
+DGV_RBD          int64
+NOM_RBD         object
+COD_REG_RBD      int64
+COD_COM_RBD      int64
+NOM_COM_RBD     object
+COD_DEPE         int64
+RURAL_RBD        int64
+COD_ENSE         int64
+COD_GRADO        int64
+LET_CUR         object
+MRUN             int64
+GEN_ALU          int64
+FEC_NAC_ALU      int64
+INT_ALU         object
+COD_COM_ALU      int64
+NOM_COM_ALU     object
+COD_SEC         object
+COD_ESPE        object
+PROM_GRAL      float64
+ASISTENCIA       int64
+SIT_FIN         object
+COD_PRO_RBD    float64
+COD_JOR        float64
+COD_ENSE2      float64
+dtype: object
+RAM: 182.222336 mb (Added year to dataframe: 2011)
+Time: 32.4845 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2012.csv (utf-8)
+Time: 32.4855 seconds
+AGNO             int64
+RBD              int64
+DGV_RBD          int64
+NOM_RBD         object
+COD_REG_RBD      int64
+COD_COM_RBD      int64
+NOM_COM_RBD     object
+COD_DEPE         int64
+RURAL_RBD        int64
+COD_ENSE         int64
+COD_GRADO        int64
+LET_CUR         object
+MRUN            object
+GEN_ALU          int64
+FEC_NAC_ALU      int64
+INT_ALU          int64
+COD_COM_ALU      int64
+NOM_COM_ALU     object
+COD_SEC          int64
+COD_ESPE         int64
+PROM_GRAL      float64
+ASISTENCIA       int64
+SIT_FIN         object
+COD_PRO_RBD    float64
+COD_JOR        float64
+COD_ENSE2      float64
+dtype: object
+RAM: 345.426944 mb (Added year to dataframe: 2012)
+Time: 53.7324 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2013.csv (utf-8)
+Time: 53.7334 seconds
+AGNO             int64
+RBD              int64
+DGV_RBD          int64
+NOM_RBD         object
+COD_REG_RBD      int64
+COD_PRO_RBD      int64
+COD_COM_RBD      int64
+NOM_COM_RBD     object
+COD_DEPE         int64
+RURAL_RBD        int64
+COD_ENSE         int64
+COD_GRADO        int64
+LET_CUR         object
+COD_JOR          int64
+MRUN             int64
+GEN_ALU          int64
+FEC_NAC_ALU      int64
+INT_ALU          int64
+COD_COM_ALU      int64
+NOM_COM_ALU     object
+COD_SEC          int64
+COD_ESPE         int64
+PROM_GRAL      float64
+ASISTENCIA       int64
+SIT_FIN         object
+COD_ENSE2      float64
+dtype: object
+RAM: 464.69632 mb (Added year to dataframe: 2013)
+Time: 76.7379 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2014.csv (latin)
+Time: 76.7389 seconds
+AGNO             int64
+RBD              int64
+DGV_RBD          int64
+NOM_RBD         object
+COD_REG_RBD      int64
+COD_PRO_RBD      int64
+COD_COM_RBD      int64
+NOM_COM_RBD     object
+COD_DEPE         int64
+RURAL_RBD        int64
+COD_ENSE         int64
+COD_ENSE2        int64
+COD_GRADO        int64
+LET_CUR         object
+COD_JOR          int64
+MRUN             int64
+GEN_ALU          int64
+FEC_NAC_ALU      int64
+COD_COM_ALU      int64
+NOM_COM_ALU     object
+COD_SEC          int64
+COD_ESPE         int64
+PROM_GRAL      float64
+ASISTENCIA       int64
+SIT_FIN         object
+INT_ALU        float64
+dtype: object
+RAM: 595.7504 mb (Added year to dataframe: 2014)
+Time: 102.0325 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2015.csv (latin)
+Time: 102.0334 seconds
+AGNO             int64
+RBD              int64
+DGV_RBD          int64
+NOM_RBD         object
+COD_REG_RBD      int64
+COD_PRO_RBD      int64
+COD_COM_RBD      int64
+NOM_COM_RBD     object
+COD_DEPE         int64
+RURAL_RBD        int64
+COD_ENSE         int64
+COD_ENSE2        int64
+COD_GRADO        int64
+LET_CUR         object
+COD_JOR          int64
+MRUN             int64
+GEN_ALU          int64
+FEC_NAC_ALU      int64
+COD_COM_ALU      int64
+NOM_COM_ALU     object
+COD_SEC          int64
+COD_ESPE         int64
+PROM_GRAL      float64
+ASISTENCIA       int64
+SIT_FIN         object
+INT_ALU        float64
+dtype: object
+RAM: 727.350272 mb (Added year to dataframe: 2015)
+Time: 132.4783 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2016.csv (utf-8-sig)
+Time: 132.4783 seconds
+AGNO             int64
+RBD              int64
+DGV_RBD          int64
+NOM_RBD         object
+COD_REG_RBD      int64
+COD_PRO_RBD      int64
+COD_COM_RBD      int64
+NOM_COM_RBD     object
+COD_DEPE         int64
+RURAL_RBD        int64
+COD_ENSE         int64
+COD_ENSE2        int64
+COD_GRADO        int64
+LET_CUR         object
+COD_JOR          int64
+MRUN             int64
+GEN_ALU          int64
+FEC_NAC_ALU      int64
+COD_COM_ALU      int64
+NOM_COM_ALU     object
+COD_SEC          int64
+COD_ESPE         int64
+PROM_GRAL      float64
+ASISTENCIA       int64
+SIT_FIN         object
+INT_ALU        float64
+dtype: object
+RAM: 854.242304 mb (Added year to dataframe: 2016)
+Time: 166.2564 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2017.csv (utf-8)
+Time: 166.2574 seconds
+AGNO             int64
+RBD              int64
+DGV_RBD          int64
+NOM_RBD         object
+COD_REG_RBD      int64
+COD_PRO_RBD      int64
+COD_COM_RBD      int64
+NOM_COM_RBD     object
+COD_DEPE         int64
+RURAL_RBD        int64
+COD_ENSE         int64
+COD_ENSE2        int64
+COD_GRADO        int64
+LET_CUR         object
+COD_JOR          int64
+MRUN             int64
+GEN_ALU          int64
+FEC_NAC_ALU      int64
+COD_COM_ALU      int64
+NOM_COM_ALU     object
+COD_SEC          int64
+COD_ESPE         int64
+PROM_GRAL      float64
+ASISTENCIA       int64
+SIT_FIN         object
+INT_ALU        float64
+dtype: object
+RAM: 934.926336 mb (Added year to dataframe: 2017)
+Time: 205.7424 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2018.csv (utf-8-sig)
+Time: 205.7434 seconds
+AGNO             int64
+RBD              int64
+DGV_RBD          int64
+NOM_RBD         object
+COD_REG_RBD      int64
+COD_PRO_RBD      int64
+COD_COM_RBD      int64
+NOM_COM_RBD     object
+COD_DEPE         int64
+RURAL_RBD        int64
+COD_ENSE         int64
+COD_ENSE2        int64
+COD_GRADO        int64
+LET_CUR         object
+COD_JOR          int64
+MRUN             int64
+GEN_ALU          int64
+FEC_NAC_ALU      int64
+COD_COM_ALU      int64
+NOM_COM_ALU     object
+COD_SEC          int64
+COD_ESPE         int64
+PROM_GRAL      float64
+ASISTENCIA       int64
+SIT_FIN         object
+INT_ALU        float64
+dtype: object
+RAM: 951.197696 mb (Added year to dataframe: 2018)
+Time: 256.2219 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2019.csv (utf-8-sig)
+Time: 256.2239 seconds
+AGNO             int64
+RBD              int64
+DGV_RBD          int64
+NOM_RBD         object
+COD_REG_RBD      int64
+COD_PRO_RBD      int64
+COD_COM_RBD      int64
+NOM_COM_RBD     object
+COD_DEPE         int64
+RURAL_RBD        int64
+COD_ENSE         int64
+COD_ENSE2        int64
+COD_GRADO        int64
+LET_CUR         object
+COD_JOR          int64
+MRUN             int64
+GEN_ALU          int64
+FEC_NAC_ALU      int64
+COD_COM_ALU      int64
+NOM_COM_ALU     object
+COD_SEC          int64
+COD_ESPE         int64
+PROM_GRAL      float64
+ASISTENCIA       int64
+SIT_FIN         object
+INT_ALU        float64
+dtype: object
+RAM: 760.914944 mb (Added year to dataframe: 2019)
+Time: 314.1917 seconds
+------------------------------------------------------------
+RAM: 760.937984 mb (Instance dataframe 2010-2019)
+Time: 314.2027 seconds
+RAM: 760.944128 mb (Converting type "MRUN" from dataframe to string)
+Time: 314.2057 seconds
+RAM: 927.729152 mb (Type converted)
+Time: 323.4374 seconds
+DROP TESTING
+TESTING DROPPED
+RAM: 434.550784 mb (Creating dataframe "notas")
+   agno   mrun  rbd  dgv_rbd  prom_gral sit_fin  asistencia let_cur  cod_ense  cod_ense2  cod_jor
+0  2010  10359    1        9        5.7       P          92       A       610        NaN      NaN
+1  2010  14329    1        9        5.8       P         100       C       610        NaN      NaN
+2  2010  16655    1        9        0.0       Y           0       D       510        NaN      NaN
+3  2010  27013    1        9        5.2       P          91       B       510        NaN      NaN
+4  2010  33774    1        9        5.1       P          95       A       510        NaN      NaN
+agno            int64
+mrun           string
+rbd             int64
+dgv_rbd         int64
+prom_gral     float64
+sit_fin        object
+asistencia      int64
+let_cur        object
+cod_ense        int64
+cod_ense2     float64
+cod_jor       float64
+dtype: object
+RAM: 787.77088 mb (Dropping duplicates from "notas")
+RAM: 1071.19104 mb (Uploading to database table "notas"...)
+RAM: 374.431232 mb (Data "notas" inserted to database)
+RAM: 374.274048 mb (Inserted all data to database)
+Time: 8743.5688 seconds
+RAM: 10.10944 mb (Dispose dataframe and finish program)
+Time: 8745.3798 seconds

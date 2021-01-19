@@ -70,7 +70,7 @@ def get_dataframes(start_time, year=2010):
             dataframes = df
         else:
             dataframes = pd.concat([dataframes, df], ignore_index=True)
-        print(df.dtypes)
+        #print(df.dtypes)
         del df
         #print(dataframes.columns.values.tolist())
         interface.get_ram(info='Added year to dataframe: ' + str(year))

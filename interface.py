@@ -1,14 +1,17 @@
 import queries as q
+from queries import cursor, connection, ps
 import static_tables as st
 import os, psutil
 import pandas as pd
 import fnmatch
 import time
+from io import StringIO
+from tqdm import tqdm
 
 def get_ram(info='unknown'):
     # Obtiene la información de la ram utilizada durante la ejecución del programa
     process = psutil.Process(os.getpid())
-    print('RAM:', process.memory_info()[0]/8000000, 'mb ('+info+')')
+    print('RAM:', process.memory_info()[0]/800000, 'mb ('+info+')')
 
 def drop_dimensions():
     # Elimina todas las tablas que existen en la base de datos
@@ -49,16 +52,48 @@ def df_to_sql(table_name, engine, data, headers, remove_duplicates):
     # Sube los datos del dataframe a la base de datos
     get_ram(info='Creating dataframe "'+table_name+'"')
     df = pd.concat(data, axis=1, keys=headers)
-    #new_df = new_df.drop_duplicates(subset=remove_duplicates)
     print(df.head())
     print(df.dtypes)
     get_ram(info='Dropping duplicates from "'+table_name+'"')
     df.drop_duplicates(subset=remove_duplicates, keep="first", inplace=True)
-    #new_df = new_df.reset_index(drop=True)
     df.reset_index(drop=True, inplace=True)
     get_ram(info='Uploading to database table "'+table_name+'"...')
     df.to_sql(table_name,engine, method='multi', if_exists='append',index=False, chunksize=100000)
     get_ram(info='Data "'+table_name+'" inserted to database')
+
+def copy_from_stringio(table_name, data, headers, remove_duplicates):
+    get_ram(info='Creating dataframe "'+table_name+'"')
+    df = pd.concat(data, axis=1, keys=headers)
+    print(df.head())
+    print(df.dtypes)
+    get_ram(info='Dropping duplicates from "'+table_name+'"')
+    df.drop_duplicates(subset=remove_duplicates, keep="first", inplace=True)
+    df.reset_index(drop=True, inplace=True)
+    
+
+    get_ram(info='Exporting csv "'+table_name+'"...')
+    
+    # Save the dataframe to disk
+    tmp_df = "./tmp_dataframe.csv"
+    df.to_csv(tmp_df, index_label='id', header=False)
+    f = open(tmp_df, 'r')
+    get_ram(info='Uploading to database table "'+table_name+'"...')
+    try:
+        cursor.copy_from(f, table_name, sep=";")
+        connection.commit()
+    except (Exception, ps.DatabaseError) as error:
+        os.remove(tmp_df)
+        print("Error: %s" % error)
+        connection.rollback()
+        return 1
+    print("copy_from_file() done")
+    os.remove(tmp_df)
+    get_ram(info='Data "'+table_name+'" inserted to database')
+
+
+
+
+    
 
 def get_amount_of_csv():
     # Obtiene la cantidad de archivos .csv

@@ -1,0 +1,4 @@
+Creado por Johan Ordenes y Leonel Vilagra
+
+Leer el archivo contenido en /datasets/readme para descargar los datasets.
+Toda la información utilizada forma parte del ministerio de educación del gobierno de Chile.

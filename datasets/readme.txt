@@ -13,5 +13,7 @@ Download Links
 
 Note
 ----
+Please download here in this folder all the files above.
+
 Years 2016, 2017, 2018, 2019 renamed to "Rendimiento por estudiante (year)"
 Download here the files above. Files added to .gitignore

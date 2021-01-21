@@ -1,7 +1,5 @@
 # Libraries
-from numpy.core.defchararray import encode
-#import pandas as pd
-import pandas as pd
+
 import sqlalchemy
 import numpy as np
 import interface
@@ -86,6 +84,10 @@ def get_dataframes(start_time, year=2010):
     return dataframes
 
 if __name__ == "__main__":
+    import os
+    os.environ["MODIN_ENGINE"] = "dask"  # Modin will use Dask
+    os.environ['MODIN_OUT_OF_CORE']='true'
+    import modin.pandas as pd
     
     # Inicio del programa
     interface.get_ram(info='Starting program')

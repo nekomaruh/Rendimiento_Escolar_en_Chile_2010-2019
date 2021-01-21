@@ -1,22 +1,8 @@
 # Libraries
-from numpy.core.defchararray import encode
-#import pandas as pd
 import pandas as pd
-import sqlalchemy
 import numpy as np
 import interface
-from sqlalchemy import event
 import time
-
-# Exportamos hacia la base de datos en postgres
-engine = sqlalchemy.create_engine(
-    'postgresql://postgres:postgres@localhost:5432/rendimiento_escolar')
-
-@event.listens_for(engine, 'before_cursor_execute')
-def receive_before_cursor_execute(conn, cursor, statement, params, context, executemany):
-    if executemany:
-        cursor.fast_executemany = True
-        cursor.commit()
 
 def get_dataframes(start_time, year=2010):
     dataframes = None
@@ -101,10 +87,10 @@ if __name__ == "__main__":
     df = get_dataframes(start_time)
 
     # Convertir la variable MRUN
-    interface.get_ram(info='Converting type "MRUN" from dataframe to string')
+    interface.get_ram(info='Converting dataframe types')
     interface.get_time(start_time)
     df['MRUN'] = df['MRUN'].astype('string')
-    interface.get_ram(info='Type converted')
+    interface.get_ram(info='Types converted')
     interface.get_time(start_time)
     
  
@@ -132,7 +118,7 @@ if __name__ == "__main__":
     # Agregar establecimientos
     data_establecimiento = [df["RBD"], df["DGV_RBD"], df["NOM_RBD"], df["RURAL_RBD"], df["COD_DEPE"], df["COD_REG_RBD"], df["COD_SEC"], df["COD_COM_RBD"]]
     headers_establecimiento = ['rbd', 'dgv_rbd', 'nom_rbd', 'rural_rbd', 'cod_depe', 'cod_reg_rbd', 'cod_sec', 'cod_com']
-    interface.df_to_sql(table_name='establecimiento', engine=engine, data=data_establecimiento, headers=headers_establecimiento, remove_duplicates=['rbd','dgv_rbd'])
+    interface.copy_from_stringio(table_name='establecimiento', data=data_establecimiento, headers=headers_establecimiento, remove_duplicates=['rbd','dgv_rbd'])
     del data_establecimiento, headers_establecimiento
     df.drop(columns=['NOM_RBD','RURAL_RBD','COD_DEPE','COD_REG_RBD','COD_SEC','COD_COM_RBD'], inplace=True, axis=1)
     interface.get_ram(info='Dispose columns "establecimiento"')
@@ -141,7 +127,7 @@ if __name__ == "__main__":
     # Agregar alumnos
     data_alumno = [df["MRUN"], df["FEC_NAC_ALU"], df["GEN_ALU"], df["COD_COM_ALU"], df["INT_ALU"]]
     headers_alumno = ["mrun", "fec_nac_alu", "gen_alu", "cod_com", "int_alu"]
-    interface.df_to_sql(table_name='alumno', engine=engine, data=data_alumno, headers=headers_alumno, remove_duplicates=['mrun'])
+    interface.copy_from_stringio(table_name='alumno', data=data_alumno, headers=headers_alumno, remove_duplicates=['mrun'])
     del data_alumno, headers_alumno
     df.drop(columns=['FEC_NAC_ALU','GEN_ALU','COD_COM_ALU','INT_ALU'], inplace=True, axis=1)
     interface.get_ram(info='Dispose columns "alumnos"')
@@ -158,7 +144,7 @@ if __name__ == "__main__":
     # Agregar notas
     data_notas = [df["AGNO"], df["MRUN"], df["RBD"], df["DGV_RBD"], df["PROM_GRAL"], df["SIT_FIN"], df['ASISTENCIA'], df['LET_CUR'], df["COD_ENSE"], df["COD_ENSE2"], df["COD_JOR"]]
     head_notas = ['agno', 'mrun', 'rbd', 'dgv_rbd', 'prom_gral', 'sit_fin', 'asistencia', 'let_cur', 'cod_ense', 'cod_ense2', 'cod_jor']
-    interface.df_to_sql(table_name='notas', engine=engine, data=data_notas, headers=head_notas, remove_duplicates=['agno','mrun'])
+    interface.copy_from_stringio(table_name='notas', data=data_notas, headers=head_notas, remove_duplicates=['agno','mrun'])
     del data_notas, head_notas
     interface.get_ram(info='Inserted all data to database')
     interface.get_time(start_time)

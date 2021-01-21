@@ -1,0 +1,165 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. Todos los derechos reservados.
+
+Prueba la nueva tecnología PowerShell multiplataforma https://aka.ms/pscore6
+
+PS C:\Users\Esteban\Documents\GitHub\Rendimiento_Escolar_en_Chile_2010-2019> & C:/Users/Esteban/AppData/Local/Microsoft/WindowsApps/python.exe c:/Users/Esteban/Documents/GitHub/Rendimiento_Escolar_en_Chile_2010-2019/main_stringio.py
+RAM: 77.70112 mb (Starting program)
+RAM: 77.72672 mb (Dropped all tables)
+RAM: 77.53216 mb (Created all tables)
+RAM: 77.53728 mb (Static tables inserted)
+Time: 0.4431 seconds
+------------------------------------------------------------ 
+Reading: datasets/Rendimiento por estudiante 2010.csv (utf-8)
+Time: 0.444 seconds
+RAM: 880.06144 mb (File loaded)
+Time: 11.8481 seconds
+RAM: 1214.30528 mb (Added year to dataframe: 2010)
+Time: 14.901 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2011.csv (utf-8)
+Time: 14.9139 seconds
+RAM: 1780.05504 mb (File loaded)
+Time: 27.1481 seconds
+RAM: 2113.30048 mb (Added year to dataframe: 2011)
+Time: 32.8917 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2012.csv (utf-8)
+Time: 32.8997 seconds
+RAM: 3159.80288 mb (File loaded)
+Time: 44.9991 seconds
+RAM: 3746.52416 mb (Added year to dataframe: 2012)
+Time: 53.4562 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2013.csv (utf-8)
+Time: 53.4652 seconds
+RAM: 4723.42528 mb (File loaded)
+Time: 65.3541 seconds
+RAM: 4937.08288 mb (Added year to dataframe: 2013)
+Time: 76.0629 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2014.csv (latin)
+Time: 76.0709 seconds
+RAM: 5938.5088 mb (File loaded)
+Time: 88.1679 seconds
+RAM: 6248.66816 mb (Added year to dataframe: 2014)
+Time: 101.2563 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2015.csv (latin)
+Time: 101.2648 seconds
+RAM: 7350.80448 mb (File loaded)
+Time: 115.7914 seconds
+RAM: 7564.67712 mb (Added year to dataframe: 2015)
+Time: 131.2755 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2016.csv (utf-8-sig)
+Time: 131.2835 seconds
+RAM: 8695.12704 mb (File loaded)
+Time: 146.5857 seconds
+RAM: 7534.90432 mb (Added year to dataframe: 2016)
+Time: 165.034 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2017.csv (utf-8)
+Time: 165.043 seconds
+RAM: 8669.71136 mb (File loaded)
+Time: 181.3077 seconds
+RAM: 8837.11488 mb (Added year to dataframe: 2017)
+Time: 203.9876 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2018.csv (utf-8-sig)
+Time: 203.9886 seconds
+RAM: 10023.9616 mb (File loaded)
+Time: 220.664 seconds
+RAM: 8403.51744 mb (Added year to dataframe: 2018)
+Time: 253.1083 seconds
+------------------------------------------------------------
+Reading: datasets/Rendimiento por estudiante 2019.csv (utf-8-sig)
+Time: 253.1163 seconds
+RAM: 9644.23168 mb (File loaded)
+Time: 272.7015 seconds
+RAM: 7505.1776 mb (Added year to dataframe: 2019)
+Time: 336.7501 seconds
+------------------------------------------------------------
+RAM: 7506.0224 mb (Instance dataframe 2010-2019)
+Time: 336.87 seconds
+RAM: 7506.0736 mb (Converting type "MRUN" from dataframe to string)
+Time: 336.872 seconds
+RAM: 9174.80448 mb (Type converted)
+Time: 347.0402 seconds
+RAM: 11643.02336 mb (Uploading to database table "comuna"...)
+RAM: 11643.61216 mb (Data "comuna" inserted to database)
+Time: 351.0548 seconds
+RAM: 10138.88512 mb (Dispose columns "comuna")
+Time: 373.9356 seconds
+RAM: 10140.0576 mb (Creating dataframe "establecimiento")
+   rbd  dgv_rbd                  nom_rbd  rural_rbd  cod_depe  cod_reg_rbd cod_sec  cod_com
+0    1        9  LICEO POLITECNICO ARICA          0         2           15     610    15101
+1    1        9  LICEO POLITECNICO ARICA          0         2           15     620    15101
+2    1        9  LICEO POLITECNICO ARICA          0         2           15       0    15101
+3    1        9  LICEO POLITECNICO ARICA          0         2           15     520    15101
+4    1        9  LICEO POLITECNICO ARICA          0         2           15       0    15101
+rbd             int64
+dgv_rbd         int64
+nom_rbd        object
+rural_rbd       int64
+cod_depe        int64
+cod_reg_rbd     int64
+cod_sec        object
+cod_com         int64
+dtype: object
+RAM: 12769.5616 mb (Dropping duplicates from "establecimiento")
+RAM: 10151.60832 mb (Uploading to database table "establecimiento"...)
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.51it/s]
+RAM: 10161.68448 mb (Data "establecimiento" inserted to database)
+RAM: 8128.39936 mb (Dispose columns "establecimiento")
+Time: 383.2643 seconds
+RAM: 8128.42496 mb (Creating dataframe "alumno")
+    mrun  fec_nac_alu  gen_alu  cod_com int_alu
+0  10359     19890404        2    15101       0
+1  14329     19920701        2    15101       0
+2  16655     19960128        2    15101       0
+3  27013     19920330        1    15101       0
+4  33774     19941230        2    15101       0
+mrun           string
+fec_nac_alu     int64
+gen_alu         int64
+cod_com         int64
+int_alu        object
+dtype: object
+RAM: 9440.15872 mb (Dropping duplicates from "alumno")
+RAM: 9736.48896 mb (Uploading to database table "alumno"...)
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 59/59 [04:56<00:00,  5.03s/it]
+RAM: 9748.40832 mb (Data "alumno" inserted to database)
+RAM: 7397.04832 mb (Dispose columns "alumnos") 
+Time: 709.6434 seconds
+RAM: 7397.05344 mb (Creating dataframe "notas")
+   agno   mrun  rbd  dgv_rbd  prom_gral sit_fin  asistencia let_cur  cod_ense  cod_ense2  cod_jor
+0  2010  10359    1        9        5.7       P          92       A       610        NaN      NaN
+1  2010  14329    1        9        5.8       P         100       C       610        NaN      NaN
+2  2010  16655    1        9        0.0       Y           0       D       510        NaN      NaN
+3  2010  27013    1        9        5.2       P          91       B       510        NaN      NaN
+4  2010  33774    1        9        5.1       P          95       A       510        NaN      NaN
+agno            int64
+mrun           string
+rbd             int64
+dgv_rbd         int64
+prom_gral     float64
+sit_fin        object
+asistencia      int64
+let_cur        object
+cod_ense        int64
+cod_ense2     float64
+cod_jor       float64
+dtype: object
+RAM: 10617.39008 mb (Dropping duplicates from "notas")
+RAM: 10730.74688 mb (Uploading to database table "notas"...)
+ 30%|█████████████████████████████████████                                                                                     | 94/309 [11:55<27:15,  7.61s/it] 
+Error: la sintaxis de entrada no es válida para tipo integer: «4.0»
+CONTEXT:  COPY notas, línea 53075, columna cod_jor: «4.0»
+
+RAM: 9156.608 mb (Data "notas" inserted to database)
+RAM: 6365.10208 mb (Inserted all data to database)
+Time: 1535.0042 seconds
+RAM: 650.51136 mb (Dispose dataframe and finish program)
+Time: 1536.4814 seconds
+PS C:\Users\Esteban\Documents\GitHub\Rendimiento_Escolar_en_Chile_2010-2019> 

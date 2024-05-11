@@ -15,8 +15,9 @@ Download Links (Datasets)
 
 Note
 ----
-- Years 2016, 2017, 2018, 2019 renamed to "Rendimiento por estudiante (year)"
-- Files should be downloaded in /datasets folder to run the program.
-- All information listed here is provided by the Chilean Ministry of Education.
+1. Files should be downloaded in /datasets folder to run the program.
+2. Years 2016, 2017, 2018, 2019 renamed to "Rendimiento por estudiante (year)".
+3. Run main.py and that's it!
+4. All information listed here is provided by the Chilean Ministry of Education.
 
 Created by Johan Ordenes & Leonel Vilagra.

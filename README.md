@@ -1,6 +1,6 @@
 # School Performance in Chile 2010-2019
  
-Download Links
+Download Links (Datasets)
 --------------
 - 2010: http://datos.mineduc.cl/datasets/172299/rendimiento-escolar-ano-2010/
 - 2011: http://datos.mineduc.cl/datasets/172301/rendimiento-escolar-ano-2011/

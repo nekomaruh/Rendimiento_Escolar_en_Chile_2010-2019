@@ -16,7 +16,7 @@ Download Links (Datasets)
 Note
 ----
 - Years 2016, 2017, 2018, 2019 renamed to "Rendimiento por estudiante (year)"
-- Download here the files above. Files added to .gitignore
+- Files should be downloaded in /datasets folder to run the program.
 - All information listed here is provided by the Chilean Ministry of Education.
 
 Created by Johan Ordenes & Leonel Vilagra.

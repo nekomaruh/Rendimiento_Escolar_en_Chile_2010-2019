@@ -1,4 +1,7 @@
 # School Performance in Chile 2010-2019
+
+<img width="541" alt="Captura de pantalla 2024-05-11 a la(s) 00 29 26" src="https://github.com/nekomaruh/Rendimiento_Escolar_en_Chile_2010-2019/assets/42304227/43d5e968-3e99-4031-aa1e-f72c55192c2f">
+
  
 Download Links (Datasets)
 --------------
